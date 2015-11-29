@@ -1,7 +1,7 @@
 {
   "name": "ember-cable",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.0.1",
+  "description": "Power your ember.js application with actioncable",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -11,12 +11,19 @@
     "start": "ember server",
     "test": "ember try:testall"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/algonauti/ember-cable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/algonauti/ember-cable/issues"
+  },
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Salvatore Ferrucci",
   "license": "MIT",
+  "readmeFile": "README.md",
   "devDependencies": {
     "broccoli-asset-rev": "^2.2.0",
     "ember-cli": "1.13.12",
@@ -41,7 +48,14 @@
     "morgan": "^1.6.1"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "ember-cli",
+    "ember",
+    "node",
+    "realtime",
+    "websocket",
+    "actioncable",
+    "rails"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.5"

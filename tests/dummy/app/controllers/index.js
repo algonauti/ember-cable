@@ -1,26 +1,3 @@
-# ember-cable
-
-This addon permit to work with actioncable easily into your ember.js application. 
-It's a port of the [rails/actioncable](https://github.com/rails/actioncable) coffeescript code.
-
-### Installation
-
-Installing the library into `package.json`:
-
-```js
-  "devDependencies": {
-    "ember-cable": "algonauti/ember-cable"
-  }  
-```
-
-
-## Basic Usage
-
-Once the addon is installed, __the cable service can be injected wherever
-needed in the application__.
-
-```js
-// app/controllers/application.js
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
@@ -54,5 +31,3 @@ export default Ember.Controller.extend({
     Ember.debug( "updateRecord(data) -> " + Ember.inspect(data) );
   }
 });
-
-```
