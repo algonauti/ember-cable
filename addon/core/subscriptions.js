@@ -6,7 +6,7 @@ var Subscriptions = Ember.Object.extend({
   subscriptions: Ember.A(),
   
   create(channelName, mixin) {
-    Subscription.extend(Ember.Mixin.create(mixin), {
+    return Subscription.extend(Ember.Mixin.create(mixin), {
       subscriptions: this, params: { channel: channelName }
     }).create();
   },
