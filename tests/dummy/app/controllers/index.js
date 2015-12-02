@@ -21,7 +21,7 @@ export default Ember.Controller.extend({
     
     consumer.subscriptions.create("NotificationChannel", {
       received: (data) => {
-        this.updateRecord(data)
+        this.updateRecord(data);
       }
     });
     
