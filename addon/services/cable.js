@@ -6,5 +6,5 @@ export default Ember.Service.extend({
   createConsumer(url) {
     return Consumer.create({ url: url });
   }
-  
+
 });

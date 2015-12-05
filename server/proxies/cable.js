@@ -16,7 +16,7 @@ module.exports = function(app, options) {
   server.on('upgrade', function (req, socket, head) {
     proxy.ws(req, socket, head);
   });
-  
+
   app.use(proxyPath, function(req, res, next){
     req.url = proxyPath + '/' + req.url;
     proxy.web(req, res);
