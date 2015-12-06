@@ -1,6 +1,6 @@
 # ember-cable
 
-This addon permit to work with actioncable easily into your ember.js application. 
+This addon permit to work with actioncable easily into your ember.js application.
 It's a port of the [rails/actioncable](https://github.com/rails/actioncable) coffeescript code.
 
 ### Installation
@@ -10,7 +10,7 @@ Installing the library into `package.json`:
 ```js
   "devDependencies": {
     "ember-cable": "algonauti/ember-cable"
-  }  
+  }
 ```
 
 
@@ -28,7 +28,7 @@ export default Ember.Controller.extend({
 
   setupConsumer: Ember.on('init', function() {
     var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
-    
+
     consumer.subscriptions.create("NotificationChannel", {
       connected() {
         this.perform('hello', { foo: 'bar' });
@@ -39,15 +39,15 @@ export default Ember.Controller.extend({
       },
       disconnected() {
         Ember.debug("NotificationChannel#disconnected");
-      }      
+      }
     });
-    
+
     consumer.subscriptions.create("NotificationChannel", {
       received: (data) => {
         this.updateRecord(data)
       }
     });
-    
+
   }),
 
   updateRecord(data) {
