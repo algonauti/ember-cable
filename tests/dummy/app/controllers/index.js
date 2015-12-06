@@ -5,8 +5,8 @@ export default Ember.Controller.extend({
 
   setupConsumer: Ember.on('init', function() {
     var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
-    
-    consumer.subscriptions.create("NotificationChannel", {
+
+    consumer.subscriptions.create('NotificationChannel', {
       connected() {
         this.perform('hello', { foo: 'bar' });
         this.perform('hello');
@@ -16,15 +16,16 @@ export default Ember.Controller.extend({
       },
       disconnected() {
         Ember.debug("NotificationChannel#disconnected");
-      }      
+      }
     });
-    
-    consumer.subscriptions.create("NotificationChannel", {
+
+    // Passing Parameters to Channel
+    consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
       received: (data) => {
         this.updateRecord(data);
       }
     });
-    
+
   }),
 
   updateRecord(data) {

@@ -42,9 +42,10 @@ export default Ember.Controller.extend({
       }
     });
 
-    consumer.subscriptions.create("NotificationChannel", {
+    // Passing Parameters to Channel
+    consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
       received: (data) => {
-        this.updateRecord(data)
+        this.updateRecord(data);
       }
     });
 
