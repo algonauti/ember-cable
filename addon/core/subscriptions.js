@@ -6,7 +6,7 @@ var Subscriptions = Ember.Object.extend({
   subscriptions: Ember.A(),
 
   create(channelName, mixin) {
-    let params = Ember.isEqual(Ember.typeOf(channelName), 'object') ? channelName : { channel: channelName }
+    let params = Ember.isEqual(Ember.typeOf(channelName), 'object') ? channelName : { channel: channelName };
     return Subscription.extend(Ember.Mixin.create(mixin), {
       subscriptions: this, params: params
     }).create();
