@@ -1,7 +1,7 @@
 # ember-cable
 
 This addon permit to work with actioncable easily into your ember.js application.
-It's a port of the [rails/actioncable](https://github.com/rails/actioncable) coffeescript code.
+It's a port of the [rails/actioncable](https://github.com/rails/rails/tree/master/actioncable) coffeescript code.
 
 ### Installation
 run the following command from inside your ember-cli project:
