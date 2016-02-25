@@ -9,6 +9,7 @@ var ConnectionMonitor = Subscription.extend({
   startedAt: null,
   pingedAt: null,
   disconnectedAt: null,
+  staleThreshold: 6
 
   reconnectAttempts: 0,
 
