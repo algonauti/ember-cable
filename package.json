@@ -1,6 +1,6 @@
 {
   "name": "ember-cable",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Power your ember.js application with actioncable",
   "directories": {
     "doc": "doc",
