@@ -9,8 +9,7 @@ var ConnectionMonitor = Subscription.extend({
   startedAt: null,
   pingedAt: null,
   disconnectedAt: null,
-  staleThreshold: 6
-
+  staleThreshold: 6,
   reconnectAttempts: 0,
 
   addToSubscriptions: Ember.on('init', function() {
