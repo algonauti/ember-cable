@@ -23,6 +23,10 @@ var Subscription = Ember.Object.extend({
       identifier: this.get('identifier'),
       data: JSON.stringify(data)
     });
+  },
+
+  unsubscribe() {
+    return this.get('subscriptions').remove(this);
   }
 
 });
