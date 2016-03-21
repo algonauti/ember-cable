@@ -17,6 +17,13 @@ var Subscriptions = Ember.Object.extend({
     this.sendCommand(subscription, 'subscribe');
   },
 
+  remove(subscription) {
+    this.forget(subscription);
+    if (!this.findAll(subscription.get('identifier')).length) {
+      return this.sendCommand(subscription, 'unsubscribe');
+    }
+  },
+
   reload() {
     this.get('subscriptions').forEach( (subscription) => {
       this.sendCommand(subscription, 'subscribe');
@@ -27,6 +34,10 @@ var Subscriptions = Ember.Object.extend({
     this.findAll(identifier).forEach( (subscription) => {
       this.sendCommand(subscription, 'rejected');
     });
+  },
+
+  forget(subscription) {
+    this.get('subscriptions').removeObject(subscription);
   },
 
   findAll(identifier) {
