@@ -3,7 +3,7 @@ import Subscription from 'ember-cable/core/subscription';
 
 var ConnectionMonitor = Subscription.extend({
   consumer: null,
-  identifier: '_ping',
+  identifier: 'ping',
 
   stoppedAt: null,
   startedAt: null,
@@ -16,18 +16,29 @@ var ConnectionMonitor = Subscription.extend({
     this.get('consumer.subscriptions').add(this);
   }),
 
-  startMonitor: Ember.on('init', function() {
+  init() {
+    this._super(...arguments);
+    this.start();
+  },
+
+  start() {
     this.reset();
     this.set('stoppedAt', null);
     this.set('startedAt', Date.now());
     this.poll();
-  }),
+  },
+
+  connected() {
+    this.reset();
+    this.set('pingedAt', Date.now());
+    this.set('disconnectedAt', null);
+  },
 
   disconnected() {
     this.set('disconnectedAt', Date.now());
   },
 
-  received() {
+  ping() {
     this.set('pingedAt', Date.now());
   },
 

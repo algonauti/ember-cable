@@ -53,6 +53,12 @@ export default Ember.Object.extend({
     message(event) {
       let data = JSON.parse(event.data);
       switch (data.type) {
+        case 'welcome':
+          this.get('consumer.connectionMonitor').connected();
+          break;
+        case 'ping':
+          this.get('consumer.connectionMonitor').ping();
+          break;
         case 'confirm_subscription':
           this.get('consumer.subscriptions').notify(data.identifier, 'connected');
           break;
