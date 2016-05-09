@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import ConnectionMonitor from 'ember-cable/core/connection_monitor';
 
 export default Ember.Object.extend({
   consumer: null,
@@ -6,6 +7,7 @@ export default Ember.Object.extend({
 
   setupConnection: Ember.on('init', function() {
     this.open();
+    this.set('monitor', ConnectionMonitor.create({ connection: this }));
   }),
 
   send(data) {
@@ -54,10 +56,10 @@ export default Ember.Object.extend({
       let data = JSON.parse(event.data);
       switch (data.type) {
         case 'welcome':
-          this.get('consumer.connectionMonitor').connected();
+          this.get('monitor').connected();
           break;
         case 'ping':
-          this.get('consumer.connectionMonitor').ping();
+          this.get('monitor').ping();
           break;
         case 'confirm_subscription':
           this.get('consumer.subscriptions').notify(data.identifier, 'connected');

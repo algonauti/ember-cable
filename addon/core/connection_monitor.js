@@ -1,20 +1,13 @@
 import Ember from 'ember';
-import Subscription from 'ember-cable/core/subscription';
 
-var ConnectionMonitor = Subscription.extend({
-  consumer: null,
-  identifier: 'ping',
-
+var ConnectionMonitor = Ember.Object.extend({
+  connection: null,
   stoppedAt: null,
   startedAt: null,
   pingedAt: null,
   disconnectedAt: null,
   staleThreshold: 6,
   reconnectAttempts: 0,
-
-  addToSubscriptions: Ember.on('init', function() {
-    this.get('consumer.subscriptions').add(this);
-  }),
 
   init() {
     this._super(...arguments);
@@ -61,7 +54,7 @@ var ConnectionMonitor = Subscription.extend({
     if(this.connectionIsStale()) {
       this.incrementProperty('reconnectAttempts');
       if(!this.disconnectedRecently()) {
-        this.get('consumer.connection').reopen();
+        this.get('connection').reopen();
       }
     }
   },
