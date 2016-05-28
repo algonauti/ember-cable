@@ -42,7 +42,7 @@ var Subscriptions = Ember.Object.extend({
 
   findAll(identifier) {
     return this.get('subscriptions').filter(function(item) {
-      return item.get('identifier').toLowerCase().match(identifier.toLowerCase());
+      return item.get('identifier').toLowerCase() === identifier.toLowerCase();
     });
   },
 
