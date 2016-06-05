@@ -6,14 +6,14 @@ export default Ember.Object.extend({
   url: null,
   queue: null,
 
-  setupConnection: Ember.on('init', function() {
+  init() {
     this.set('subscriptions', Subscriptions.create({ consumer: this }));
     this.set('connection', Connection.create({ consumer: this }));
     this.set('queue', []);
-  }),
+  },
 
   send(data) {
-    this.get('queue').push(data);
+    this.get('queue').pushObject(data);
   },
 
   queueObserver: Ember.on('init', Ember.observer('queue.[]', 'connection.connected', function() {
