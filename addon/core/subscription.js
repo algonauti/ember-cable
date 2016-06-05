@@ -8,9 +8,10 @@ var Subscription = Ember.Object.extend({
     return JSON.stringify(this.get('params'));
   }),
 
-  addToSubscriptions: Ember.on('init', function() {
+  init() {
+    this._super(...arguments);
     this.get('subscriptions').add(this);
-  }),
+  },
 
   perform(action, data = {}) {
     data.action = action;

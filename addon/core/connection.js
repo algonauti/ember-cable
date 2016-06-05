@@ -5,10 +5,11 @@ export default Ember.Object.extend({
   consumer: null,
   connected: false,
 
-  setupConnection: Ember.on('init', function() {
+  init() {
+    this._super(...arguments);
     this.open();
     this.set('monitor', ConnectionMonitor.create({ connection: this }));
-  }),
+  },
 
   send(data) {
     if(this.isOpen()) {
