@@ -1,6 +1,6 @@
 # ember-cable
 
-This addon permit to work with actioncable easily into your ember.js application.
+This add-on enables simple integration of Rails Action Cable into Ember apps.
 
 ### Installation
 run the following command from inside your ember-cli project:
@@ -36,12 +36,14 @@ export default Ember.Controller.extend({
     });
 
     // Passing Parameters to Channel
-    consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
+    const subscription = consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
       received: (data) => {
         this.updateRecord(data);
       }
     });
 
+    // Send actions to your Action Cable channel class
+    subscription.perform("your_channel_action", { hey: "hello" });
   }),
 
   updateRecord(data) {
