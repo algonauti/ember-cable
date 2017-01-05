@@ -33,7 +33,7 @@ var Subscriptions = Ember.Object.extend({
   reject(identifier) {
     console.log("rejecting: " + identifier);
     this.findAll(identifier).forEach( (subscription) => {
-      this.forget(subscription);
+      // this.forget(subscription);
       this.notify(subscription, "rejected");
     });
   },
