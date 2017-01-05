@@ -74,6 +74,9 @@ var Subscriptions = Ember.Object.extend({
     } else {
       this.get('consumer').send({command, identifier});
     }
+  },
+  subs() {
+    return this.get('subscriptions');
   }
 
 });
