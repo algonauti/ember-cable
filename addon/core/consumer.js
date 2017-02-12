@@ -7,8 +7,8 @@ export default Ember.Object.extend({
 
   init() {
     this._super(...arguments);
-    this.set('subscriptions', Subscriptions.create({ consumer: this }));
-    this.set('connection', Connection.create({ consumer: this }));
+    this.set('subscriptions', Subscriptions.create(Ember.getOwner(this).ownerInjection(), { consumer: this }));
+    this.set('connection', Connection.create(Ember.getOwner(this).ownerInjection(), { consumer: this }));
   },
 
   send(data) {

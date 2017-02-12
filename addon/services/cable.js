@@ -4,7 +4,7 @@ import Consumer from 'ember-cable/core/consumer';
 export default Ember.Service.extend({
 
   createConsumer(url) {
-    return Consumer.create({ url: url });
+    return Consumer.create(Ember.getOwner(this).ownerInjection(), { url: url });
   }
 
 });

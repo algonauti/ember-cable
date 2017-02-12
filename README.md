@@ -42,6 +42,17 @@ export default Ember.Controller.extend({
       }
     });
 
+    // Using mixin and inject your services
+    var channelMixin = Ember.Mixin.create({
+      store: Ember.inject.service(),
+
+      received(data) {
+        this.get("store").pushPayload(data);
+      }
+    });
+
+    consumer.subscriptions.create({ channel: 'NotificationChannel' }, channelMixin);
+
     // Send actions to your Action Cable channel class
     subscription.perform("your_channel_action", { hey: "hello" });
   }),

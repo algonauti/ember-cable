@@ -8,7 +8,7 @@ export default Ember.Object.extend({
   init() {
     this._super(...arguments);
     this.open();
-    this.set('monitor', ConnectionMonitor.create({ connection: this }));
+    this.set('monitor', ConnectionMonitor.create(Ember.getOwner(this).ownerInjection(), { connection: this }));
   },
 
   send(data) {
