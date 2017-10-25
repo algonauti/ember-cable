@@ -45,7 +45,11 @@ export default Ember.Object.extend({
 
   isOpen() {
     return Ember.isEqual(this.get('connected'), true) &&
-      Ember.isEqual(this.get('webSocket').readyState, this.get('webSocket').OPEN)
+      Ember.isEqual(this.get('webSocket').readyState, this.get('webSocket').OPEN);
+  },
+
+  isConnecting() {
+    return Ember.isEqual(this.get('webSocket').readyState, this.get('webSocket').CONNECTING);
   },
 
   disconnect() {
