@@ -32,7 +32,8 @@ var Subscriptions = Ember.Object.extend({
 
   reject(identifier) {
     this.findAll(identifier).forEach( (subscription) => {
-      this.sendCommand(subscription, 'rejected');
+      this.forget(subscription);
+      this.notify(subscription, "rejected");
     });
   },
 
@@ -73,7 +74,6 @@ var Subscriptions = Ember.Object.extend({
       this.get('consumer').send({command, identifier});
     }
   }
-
 });
 
 Subscriptions[Ember.NAME_KEY] = 'Subscriptions';
