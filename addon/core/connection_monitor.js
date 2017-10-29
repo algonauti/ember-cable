@@ -60,7 +60,7 @@ var ConnectionMonitor = Ember.Object.extend({
   },
 
   connectionIsStale() {
-    return this.secondsSince(this.get('pingedAt') || this.get('startedAt')) > this.get('staleThreshold');
+    return !this.get('connection').isConnecting() && this.secondsSince(this.get('pingedAt') || this.get('startedAt')) > this.get('staleThreshold');
   },
 
   disconnectedRecently() {
