@@ -2,7 +2,13 @@ import { later } from '@ember/runloop';
 import { tryInvoke, isEqual } from '@ember/utils';
 import { getOwner } from '@ember/application';
 import EmberObject from '@ember/object';
+import Ember from 'ember';
 import ConnectionMonitor from 'ember-cable/core/connection_monitor';
+
+const {
+  get,
+  set
+} = Ember;
 
 export default EmberObject.extend({
   consumer: null,
@@ -11,24 +17,24 @@ export default EmberObject.extend({
   init() {
     this._super(...arguments);
     this.open();
-    this.set('monitor', ConnectionMonitor.create(getOwner(this).ownerInjection(), { connection: this }));
+    set(this,'monitor', ConnectionMonitor.create(getOwner(this).ownerInjection(), { connection: this }));
   },
 
   send(data) {
     if(this.isOpen()) {
-      this.get('webSocket').send(JSON.stringify(data));
+      get(this,'webSocket').send(JSON.stringify(data));
     }
   },
 
   open() {
-    this.set('webSocket', new WebSocket(this.get('consumer.url')));
+    set(this,'webSocket', new WebSocket(get(this,'consumer.url')));
     for (var eventName in this.events) {
-      this.get('webSocket')[`on${eventName}`] = this.events[eventName].bind(this);
+      get(this,'webSocket')[`on${eventName}`] = this.events[eventName].bind(this);
     }
   },
 
   close() {
-    tryInvoke(this.get('webSocket'), 'close');
+    tryInvoke(get(this,'webSocket'), 'close');
   },
 
   reopen() {
@@ -47,17 +53,17 @@ export default EmberObject.extend({
   },
 
   isOpen() {
-    return isEqual(this.get('connected'), true) &&
-      isEqual(this.get('webSocket').readyState, this.get('webSocket').OPEN);
+    return isEqual(get(this,'connected'), true) &&
+      isEqual(get(this,'webSocket').readyState, get(this,'webSocket').OPEN);
   },
 
   isConnecting() {
-    return isEqual(this.get('webSocket').readyState, this.get('webSocket').CONNECTING);
+    return isEqual(get(this,'webSocket').readyState, get(this,'webSocket').CONNECTING);
   },
 
   disconnect() {
-    this.set('connected', false);
-    this.get('consumer.subscriptions').notifyAll('disconnected');
+    set(this,'connected', false);
+    get(this,'consumer.subscriptions').notifyAll('disconnected');
   },
 
   events: {
@@ -65,26 +71,26 @@ export default EmberObject.extend({
       let data = JSON.parse(event.data);
       switch (data.type) {
         case 'welcome':
-          this.get('monitor').connected();
+          get(this,'monitor').connected();
           break;
         case 'ping':
-          this.get('monitor').ping();
+          get(this,'monitor').ping();
           break;
         case 'confirm_subscription':
-          this.get('consumer.subscriptions').notify(data.identifier, 'connected');
+          get(this,'consumer.subscriptions').notify(data.identifier, 'connected');
           break;
         case 'reject_subscription':
-          this.get('consumer.subscriptions').reject(data.identifier);
+          get(this,'consumer.subscriptions').reject(data.identifier);
           break;
         default:
-          this.get('consumer.subscriptions').notify(data.identifier, 'received', data.message);
+          get(this,'consumer.subscriptions').notify(data.identifier, 'received', data.message);
       }
 
     },
 
     open() {
-      this.set('connected', true);
-      this.get('consumer.subscriptions').reload();
+      set(this,'connected', true);
+      get(this,'consumer.subscriptions').reload();
     },
 
     close() {

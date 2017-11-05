@@ -6,6 +6,10 @@ import EmberObject from '@ember/object';
 import Ember from 'ember';
 import Subscription from 'ember-cable/core/subscription';
 
+const {
+  get
+} = Ember;
+
 var Subscriptions = EmberObject.extend({
   consumer: null,
   subscriptions: A(),
@@ -18,19 +22,19 @@ var Subscriptions = EmberObject.extend({
   },
 
   add(subscription) {
-    this.get('subscriptions').push(subscription);
+    get(this,'subscriptions').push(subscription);
     this.sendCommand(subscription, 'subscribe');
   },
 
   remove(subscription) {
     this.forget(subscription);
-    if (!this.findAll(subscription.get('identifier')).length) {
+    if (!this.findAll(get(subscription, 'identifier')).length) {
       return this.sendCommand(subscription, 'unsubscribe');
     }
   },
 
   reload() {
-    this.get('subscriptions').forEach( (subscription) => {
+    get(this,'subscriptions').forEach( (subscription) => {
       this.sendCommand(subscription, 'subscribe');
     });
   },
@@ -43,17 +47,17 @@ var Subscriptions = EmberObject.extend({
   },
 
   forget(subscription) {
-    this.get('subscriptions').removeObject(subscription);
+    get(this,'subscriptions').removeObject(subscription);
   },
 
   findAll(identifier) {
-    return this.get('subscriptions').filter(function(item) {
-      return item.get('identifier').toLowerCase() === identifier.toLowerCase();
+    return get(this,'subscriptions').filter(function(item) {
+      return get(item, 'identifier').toLowerCase() === identifier.toLowerCase();
     });
   },
 
   notifyAll(callbackName, ...args) {
-    this.get('subscriptions').forEach( (subscription) => {
+    get(this,'subscriptions').forEach( (subscription) => {
       this.notify(subscription, callbackName, ...args);
     });
   },
@@ -72,11 +76,11 @@ var Subscriptions = EmberObject.extend({
   },
 
   sendCommand(subscription, command) {
-    let identifier = subscription.get('identifier');
+    let identifier = get(subscription, 'identifier');
     if(isEqual(identifier, '_ping')) {
-      this.get('consumer.connection').isOpen();
+      get(this,'consumer.connection').isOpen();
     } else {
-      this.get('consumer').send({command, identifier});
+      get(this,'consumer').send({command, identifier});
     }
   }
 });
