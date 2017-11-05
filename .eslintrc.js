@@ -10,7 +10,8 @@ module.exports = {
   ],
   env: {
     browser: true
-  },
+  },  
   rules: {
+    'ember/named-functions-in-promises': ['error', { allowSimpleArrowFunction: true }],
   }
 };
