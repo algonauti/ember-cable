@@ -1,9 +1,12 @@
-import Ember from 'ember';
+import { debug, inspect } from '@ember/debug';
+import { on } from '@ember/object/evented';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
-  cableService: Ember.inject.service('cable'),
+export default Controller.extend({
+  cableService: service('cable'),
 
-  setupConsumer: Ember.on('init', function() {
+  setupConsumer: on('init', function() {
     var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
 
     consumer.subscriptions.create('NotificationChannel', {
@@ -12,10 +15,10 @@ export default Ember.Controller.extend({
         this.perform('hello');
       },
       received(data) {
-        Ember.debug( "received(data) -> " + Ember.inspect(data) );
+        debug( "received(data) -> " + inspect(data) );
       },
       disconnected() {
-        Ember.debug("NotificationChannel#disconnected");
+        debug("NotificationChannel#disconnected");
       }
     });
 
@@ -29,6 +32,6 @@ export default Ember.Controller.extend({
   }),
 
   updateRecord(data) {
-    Ember.debug( "updateRecord(data) -> " + Ember.inspect(data) );
+    debug( "updateRecord(data) -> " + inspect(data) );
   }
 });

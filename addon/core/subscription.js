@@ -1,10 +1,11 @@
+import EmberObject, { computed } from '@ember/object';
 import Ember from 'ember';
 
-var Subscription = Ember.Object.extend({
+var Subscription = EmberObject.extend({
   subscriptions: null,
   params: {},
 
-  identifier: Ember.computed('params', function() {
+  identifier: computed('params', function() {
     return JSON.stringify(this.get('params'));
   }),
 

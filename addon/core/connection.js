@@ -1,14 +1,17 @@
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import { tryInvoke, isEqual } from '@ember/utils';
+import { getOwner } from '@ember/application';
+import EmberObject from '@ember/object';
 import ConnectionMonitor from 'ember-cable/core/connection_monitor';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   consumer: null,
   connected: false,
 
   init() {
     this._super(...arguments);
     this.open();
-    this.set('monitor', ConnectionMonitor.create(Ember.getOwner(this).ownerInjection(), { connection: this }));
+    this.set('monitor', ConnectionMonitor.create(getOwner(this).ownerInjection(), { connection: this }));
   },
 
   send(data) {
@@ -25,7 +28,7 @@ export default Ember.Object.extend({
   },
 
   close() {
-    Ember.tryInvoke(this.get('webSocket'), 'close');
+    tryInvoke(this.get('webSocket'), 'close');
   },
 
   reopen() {
@@ -33,7 +36,7 @@ export default Ember.Object.extend({
       this.open();
     } else {
       this.close();
-      Ember.run.later(this, () => {
+      later(this, () => {
         this.open();
       }, 500);
     }
@@ -44,12 +47,12 @@ export default Ember.Object.extend({
   },
 
   isOpen() {
-    return Ember.isEqual(this.get('connected'), true) &&
-      Ember.isEqual(this.get('webSocket').readyState, this.get('webSocket').OPEN);
+    return isEqual(this.get('connected'), true) &&
+      isEqual(this.get('webSocket').readyState, this.get('webSocket').OPEN);
   },
 
   isConnecting() {
-    return Ember.isEqual(this.get('webSocket').readyState, this.get('webSocket').CONNECTING);
+    return isEqual(this.get('webSocket').readyState, this.get('webSocket').CONNECTING);
   },
 
   disconnect() {

@@ -1,6 +1,8 @@
+import { later } from '@ember/runloop';
+import EmberObject from '@ember/object';
 import Ember from 'ember';
 
-var ConnectionMonitor = Ember.Object.extend({
+var ConnectionMonitor = EmberObject.extend({
   connection: null,
   stoppedAt: null,
   startedAt: null,
@@ -40,7 +42,7 @@ var ConnectionMonitor = Ember.Object.extend({
   },
 
   poll() {
-    Ember.run.later(this, () => {
+    later(this, () => {
       this.reconnectIfStale();
       this.poll();
     }, this.interval());
