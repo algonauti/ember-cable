@@ -1,10 +1,17 @@
 import { debug, inspect } from '@ember/debug';
 import { on } from '@ember/object/evented';
 import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
 import Controller from '@ember/controller';
+
+const {
+  alias 
+} = computed;
 
 export default Controller.extend({
   cableService: service('cable'),
+
+  nail: alias('model'),
 
   setupConsumer: on('init', function() {
     var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
