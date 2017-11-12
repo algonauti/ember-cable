@@ -1,6 +1,13 @@
+import { later } from '@ember/runloop';
+import EmberObject from '@ember/object';
 import Ember from 'ember';
 
-var ConnectionMonitor = Ember.Object.extend({
+const {
+  set,
+  get
+} = Ember;
+
+var ConnectionMonitor = EmberObject.extend({
   connection: null,
   stoppedAt: null,
   startedAt: null,
@@ -16,55 +23,55 @@ var ConnectionMonitor = Ember.Object.extend({
 
   start() {
     this.reset();
-    this.set('stoppedAt', null);
-    this.set('startedAt', Date.now());
+    set(this, 'stoppedAt', null);
+    set(this, 'startedAt', Date.now());
     this.poll();
   },
 
   connected() {
     this.reset();
-    this.set('pingedAt', Date.now());
-    this.set('disconnectedAt', null);
+    set(this,'pingedAt', Date.now());
+    set(this,'disconnectedAt', null);
   },
 
   disconnected() {
-    this.set('disconnectedAt', Date.now());
+    set(this,'disconnectedAt', Date.now());
   },
 
   ping() {
-    this.set('pingedAt', Date.now());
+    set(this,'pingedAt', Date.now());
   },
 
   reset() {
-    this.set('reconnectAttempts', 0);
+    set(this,'reconnectAttempts', 0);
   },
 
   poll() {
-    Ember.run.later(this, () => {
+    later(this, () => {
       this.reconnectIfStale();
       this.poll();
     }, this.interval());
   },
 
   interval() {
-    return Math.max(3, Math.min(30, 5 * Math.log(this.get('reconnectAttempts') + 1) )) * 1000;
+    return Math.max(3, Math.min(30, 5 * Math.log(get(this,'reconnectAttempts') + 1) )) * 1000;
   },
 
   reconnectIfStale() {
     if(this.connectionIsStale()) {
       this.incrementProperty('reconnectAttempts');
       if(!this.disconnectedRecently()) {
-        this.get('connection').reopen();
+        get(this,'connection').reopen();
       }
     }
   },
 
   connectionIsStale() {
-    return !this.get('connection').isConnecting() && this.secondsSince(this.get('pingedAt') || this.get('startedAt')) > this.get('staleThreshold');
+    return !get(this,'connection').isConnecting() && this.secondsSince(get(this,'pingedAt') || get(this,'startedAt')) > get(this,'staleThreshold');
   },
 
   disconnectedRecently() {
-    return this.get('disconnectedAt') && this.secondsSince(this.get('disconnectedAt') ) < this.get('staleThreshold');
+    return get(this,'disconnectedAt') && this.secondsSince(get(this,'disconnectedAt') ) < get(this,'staleThreshold');
   },
 
   secondsSince(time) {

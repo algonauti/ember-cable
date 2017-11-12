@@ -2,6 +2,8 @@
 
 This add-on enables simple integration of Rails Action Cable into Ember apps.
 
+[![Build Status](https://travis-ci.org/algonauti/ember-cable.svg?branch=master)](https://travis-ci.org/algonauti/ember-cable)
+
 ### Installation
 run the following command from inside your ember-cli project:
 
