@@ -3,7 +3,7 @@ module.exports = {
   useYarn: true,
   scenarios: [
     {
-      name: 'ember-default',
+      name: 'ember-release',
       npm: {
         dependencies: {
         }
