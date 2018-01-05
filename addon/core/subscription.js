@@ -1,13 +1,8 @@
-import EmberObject, { computed } from '@ember/object';
-import Ember from 'ember';
-
-const {
-  get
-} = Ember;
+import EmberObject, { get, computed } from '@ember/object';
 
 var Subscription = EmberObject.extend({
   subscriptions: null,
-  params: {},
+  params: null,
 
   identifier: computed('params', function() {
     return JSON.stringify(get(this,'params'));
@@ -37,6 +32,6 @@ var Subscription = EmberObject.extend({
 
 });
 
-Subscription[Ember.NAME_KEY] = 'Subscription';
+Subscription.toString = () => 'Subscription';
 
 export default Subscription;

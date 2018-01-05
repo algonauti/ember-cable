@@ -1,24 +1,25 @@
 import { getOwner } from '@ember/application';
 import Mixin from '@ember/object/mixin';
 import { isEqual, typeOf, tryInvoke } from '@ember/utils';
-import { A } from '@ember/array';
-import EmberObject from '@ember/object';
-import Ember from 'ember';
+import EmberObject, { get, set } from '@ember/object';
 import Subscription from 'ember-cable/core/subscription';
-
-const {
-  get
-} = Ember;
 
 var Subscriptions = EmberObject.extend({
   consumer: null,
-  subscriptions: A(),
+  subscriptions: null,
+
+  init() {
+    this._super(...arguments);
+    set(this,'subscriptions', []);
+  },
 
   create(channelName, mixin) {
     let params = isEqual(typeOf(channelName), 'object') ? channelName : { channel: channelName };
-    return Subscription.extend(Mixin.create(mixin), {
-      subscriptions: this, params: params
-    }).create(getOwner(this).ownerInjection());
+
+    return Subscription.extend(Mixin.create(mixin)).create(
+      getOwner(this).ownerInjection(),
+      { subscriptions: this, params: params }
+    );
   },
 
   add(subscription) {
@@ -85,6 +86,6 @@ var Subscriptions = EmberObject.extend({
   }
 });
 
-Subscriptions[Ember.NAME_KEY] = 'Subscriptions';
+Subscriptions.toString = () => 'Subscriptions';
 
 export default Subscriptions;

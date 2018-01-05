@@ -1,14 +1,10 @@
 import { later } from '@ember/runloop';
 import { tryInvoke, isEqual } from '@ember/utils';
 import { getOwner } from '@ember/application';
-import EmberObject from '@ember/object';
-import Ember from 'ember';
+import { capitalize } from '@ember/string';
+import EmberObject, { set, get } from '@ember/object';
 import ConnectionMonitor from 'ember-cable/core/connection_monitor';
 
-const {
-  get,
-  set
-} = Ember;
 
 export default EmberObject.extend({
   consumer: null,
@@ -17,7 +13,7 @@ export default EmberObject.extend({
   init() {
     this._super(...arguments);
     this.open();
-    set(this,'monitor', ConnectionMonitor.create(getOwner(this).ownerInjection(), { connection: this }));
+    set(this, 'monitor', ConnectionMonitor.create(getOwner(this).ownerInjection(), { connection: this }));
   },
 
   send(data) {
@@ -27,10 +23,15 @@ export default EmberObject.extend({
   },
 
   open() {
-    set(this,'webSocket', new WebSocket(get(this,'consumer.url')));
-    for (var eventName in this.events) {
-      get(this,'webSocket')[`on${eventName}`] = this.events[eventName].bind(this);
-    }
+    let ws = new WebSocket(get(this,'consumer.url'));
+
+    ['open', 'close', 'error', 'message'].forEach( (eventName) => {
+      ws[`on${eventName}`] = (event) => {
+        tryInvoke(this, `on${capitalize(eventName)}`, [event]);
+      };
+    });
+
+    set(this,'webSocket', ws);
   },
 
   close() {
@@ -43,7 +44,7 @@ export default EmberObject.extend({
     } else {
       this.close();
       later(this, () => {
-        this.open();
+        this.reopen();
       }, 500);
     }
   },
@@ -66,40 +67,38 @@ export default EmberObject.extend({
     get(this,'consumer.subscriptions').notifyAll('disconnected');
   },
 
-  events: {
-    message(event) {
-      let data = JSON.parse(event.data);
-      switch (data.type) {
-        case 'welcome':
-          get(this,'monitor').connected();
-          break;
-        case 'ping':
-          get(this,'monitor').ping();
-          break;
-        case 'confirm_subscription':
-          get(this,'consumer.subscriptions').notify(data.identifier, 'connected');
-          break;
-        case 'reject_subscription':
-          get(this,'consumer.subscriptions').reject(data.identifier);
-          break;
-        default:
-          get(this,'consumer.subscriptions').notify(data.identifier, 'received', data.message);
-      }
-
-    },
-
-    open() {
-      set(this,'connected', true);
-      get(this,'consumer.subscriptions').reload();
-    },
-
-    close() {
-      this.disconnect();
-    },
-
-    error() {
-      this.disconnect();
+  onMessage(event) {
+    let data = JSON.parse(event.data);
+    switch (data.type) {
+      case 'welcome':
+        get(this,'monitor').connected();
+        break;
+      case 'ping':
+        get(this,'monitor').ping();
+        break;
+      case 'confirm_subscription':
+        get(this,'consumer.subscriptions').notify(data.identifier, 'connected');
+        break;
+      case 'reject_subscription':
+        get(this,'consumer.subscriptions').reject(data.identifier);
+        break;
+      default:
+        get(this,'consumer.subscriptions').notify(data.identifier, 'received', data.message);
     }
+
+  },
+
+  onOpen() {
+    set(this,'connected', true);
+    get(this,'consumer.subscriptions').reload();
+  },
+
+  onClose() {
+    this.disconnect();
+  },
+
+  onError() {
+    this.disconnect();
   }
 
 });
