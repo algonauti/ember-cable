@@ -1,13 +1,7 @@
 import { getOwner } from '@ember/application';
-import EmberObject from '@ember/object';
+import EmberObject, { get, set } from '@ember/object';
 import Subscriptions from 'ember-cable/core/subscriptions';
 import Connection from 'ember-cable/core/connection';
-import Ember from 'ember';
-
-const {
-  get,
-  set
-} = Ember;
 
 export default EmberObject.extend({
   url: null,

@@ -1,20 +1,17 @@
-import { debug, inspect } from '@ember/debug';
-import { on } from '@ember/object/evented';
+import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
-import Controller from '@ember/controller';
+import { debug, inspect } from '@ember/debug';
 
-const {
-  alias 
-} = computed;
+export default Component.extend({
+  cable: service('cable'),
 
-export default Controller.extend({
-  cableService: service('cable'),
+  init() {
+    this._super(...arguments);
+    this._setupConsumer();
+  },
 
-  nail: alias('model'),
-
-  setupConsumer: on('init', function() {
-    var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
+  _setupConsumer() {
+    var consumer = this.get('cable').createConsumer('ws://localhost:4200/cable');
 
     consumer.subscriptions.create('NotificationChannel', {
       connected() {
@@ -32,13 +29,12 @@ export default Controller.extend({
     // Passing Parameters to Channel
     consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
       received: (data) => {
-        this.updateRecord(data);
+        this._updateRecord(data);
       }
     });
+  },
 
-  }),
-
-  updateRecord(data) {
+  _updateRecord(data) {
     debug( "updateRecord(data) -> " + inspect(data) );
   }
 });

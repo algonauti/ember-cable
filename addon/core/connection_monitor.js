@@ -1,11 +1,5 @@
 import { later } from '@ember/runloop';
-import EmberObject from '@ember/object';
-import Ember from 'ember';
-
-const {
-  set,
-  get
-} = Ember;
+import EmberObject, { set, get } from '@ember/object';
 
 var ConnectionMonitor = EmberObject.extend({
   connection: null,
@@ -22,14 +16,14 @@ var ConnectionMonitor = EmberObject.extend({
   },
 
   start() {
-    this.reset();
+    set(this,'reconnectAttempts', 0);
     set(this, 'stoppedAt', null);
     set(this, 'startedAt', Date.now());
     this.poll();
   },
 
   connected() {
-    this.reset();
+    set(this,'reconnectAttempts', 0);
     set(this,'pingedAt', Date.now());
     set(this,'disconnectedAt', null);
   },
@@ -40,10 +34,6 @@ var ConnectionMonitor = EmberObject.extend({
 
   ping() {
     set(this,'pingedAt', Date.now());
-  },
-
-  reset() {
-    set(this,'reconnectAttempts', 0);
   },
 
   poll() {
@@ -79,6 +69,6 @@ var ConnectionMonitor = EmberObject.extend({
   }
 });
 
-ConnectionMonitor[Ember.NAME_KEY] = 'ConnectionMonitor';
+ConnectionMonitor.toString = () => 'ConnectionMonitor';
 
 export default ConnectionMonitor;
