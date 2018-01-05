@@ -21,7 +21,7 @@ module.exports = function(app, options) {
     proxy.ws(req, socket, head);
   });
 
-  app.use(proxyPath, function(req, res, next){
+  app.use(proxyPath, function(req, res){
     req.url = proxyPath + '/' + req.url;
     proxy.web(req, res);
   });
