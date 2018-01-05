@@ -19,7 +19,6 @@ module.exports = function(app, options) {
   const morgan = require('morgan');
   app.use(morgan('dev'));
 
-  mocks.forEach(function(route) { route(app, options); });
-  proxies.forEach(function(route) { route(app, options); });
-
+  mocks.forEach(route => route(app, options));
+  proxies.forEach(route => route(app, options));
 };

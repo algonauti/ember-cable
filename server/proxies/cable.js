@@ -1,6 +1,8 @@
 /* eslint-env node */
 'use strict';
 
+import { debug } from '@ember/debug';
+
 const proxyPath = '/cable';
 
 module.exports = function(app, options) {
@@ -14,14 +16,14 @@ module.exports = function(app, options) {
   });
 
   proxy.on('error', function(err, req) {
-    console.error(err, req.url);
+    debug(err, req.url);
   });
 
   server.on('upgrade', function (req, socket, head) {
     proxy.ws(req, socket, head);
   });
 
-  app.use(proxyPath, function(req, res, next){
+  app.use(proxyPath, function(req, res){
     req.url = proxyPath + '/' + req.url;
     proxy.web(req, res);
   });
