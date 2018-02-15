@@ -1,4 +1,4 @@
-import { later } from '@ember/runloop';
+import { run } from '@ember/runloop';
 import { tryInvoke, isEqual } from '@ember/utils';
 import { getOwner } from '@ember/application';
 import { capitalize } from '@ember/string';
@@ -9,6 +9,7 @@ import ConnectionMonitor from 'ember-cable/core/connection_monitor';
 export default EmberObject.extend({
   consumer: null,
   connected: false,
+  _reopenTimer: null,
 
   init() {
     this._super(...arguments);
@@ -43,10 +44,15 @@ export default EmberObject.extend({
       this.open();
     } else {
       this.close();
-      later(this, () => {
-        this.reopen();
+      this._reopenTimer = setTimeout(() => {
+        run(() => this.reopen());
       }, 500);
     }
+  },
+
+  willDestroy() {
+    this._super();
+    clearTimeout(this._reopenTimer);
   },
 
   isClose() {
@@ -85,7 +91,6 @@ export default EmberObject.extend({
       default:
         get(this,'consumer.subscriptions').notify(data.identifier, 'received', data.message);
     }
-
   },
 
   onOpen() {

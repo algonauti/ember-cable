@@ -38,7 +38,7 @@ var ConnectionMonitor = EmberObject.extend({
   },
 
   poll() {
-    this._intervalTimer = setInterval(() => {
+    this._intervalTimer = setTimeout(() => {
       run(() => {
         this.reconnectIfStale();
         this.poll();
@@ -48,7 +48,7 @@ var ConnectionMonitor = EmberObject.extend({
 
   willDestroy() {
     this._super();
-    clearInterval(this._intervalTimer);
+    clearTimeout(this._intervalTimer);
   },
 
   interval() {
