@@ -14,7 +14,7 @@ export default EmberObject.extend({
   init() {
     this._super(...arguments);
     this.open();
-    set(this, 'monitor', ConnectionMonitor.create(getOwner(this).ownerInjection(), { connection: this }));
+    this.monitor = ConnectionMonitor.create(getOwner(this).ownerInjection(), { connection: this });
   },
 
   send(data) {
@@ -40,19 +40,18 @@ export default EmberObject.extend({
   },
 
   reopen() {
-    if(this.isClose()){
+    if(this.isClose()) {
       this.open();
     } else {
       this.close();
-      this._reopenTimer = setTimeout(() => {
-        run(() => this.reopen());
-      }, 500);
+      this._reopenTimer = setTimeout(run.bind(this, 'reopen'), 500);
     }
   },
 
   willDestroy() {
     this._super();
     clearTimeout(this._reopenTimer);
+    run(this.monitor, 'destroy');
   },
 
   isClose() {

@@ -1,5 +1,6 @@
-import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import Mixin from '@ember/object/mixin';
+import { getOwner } from '@ember/application';
 import { isEqual, typeOf, tryInvoke } from '@ember/utils';
 import EmberObject, { get, set } from '@ember/object';
 import Subscription from 'ember-cable/core/subscription';
@@ -10,7 +11,7 @@ var Subscriptions = EmberObject.extend({
 
   init() {
     this._super(...arguments);
-    set(this,'subscriptions', []);
+    set(this, 'subscriptions', []);
   },
 
   create(channelName, mixin) {
@@ -83,6 +84,11 @@ var Subscriptions = EmberObject.extend({
     } else {
       get(this,'consumer').send({command, identifier});
     }
+  },
+
+  willDestroy() {
+    this._super();
+    get(this, 'subscriptions').forEach(subscription => run(subscription, 'destroy'));
   }
 });
 
