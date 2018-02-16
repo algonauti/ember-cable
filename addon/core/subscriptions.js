@@ -1,8 +1,9 @@
+import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import Mixin from '@ember/object/mixin';
 import { getOwner } from '@ember/application';
+import EmberObject, { get } from '@ember/object';
 import { isEqual, typeOf, tryInvoke } from '@ember/utils';
-import EmberObject, { get, set } from '@ember/object';
 import Subscription from 'ember-cable/core/subscription';
 
 var Subscriptions = EmberObject.extend({
@@ -11,7 +12,7 @@ var Subscriptions = EmberObject.extend({
 
   init() {
     this._super(...arguments);
-    set(this, 'subscriptions', []);
+    this.subscriptions = A();
   },
 
   create(channelName, mixin) {
@@ -24,7 +25,7 @@ var Subscriptions = EmberObject.extend({
   },
 
   add(subscription) {
-    get(this,'subscriptions').push(subscription);
+    this.subscriptions.push(subscription);
     this.sendCommand(subscription, 'subscribe');
   },
 
@@ -36,7 +37,7 @@ var Subscriptions = EmberObject.extend({
   },
 
   reload() {
-    get(this,'subscriptions').forEach( (subscription) => {
+    this.subscriptions.forEach( (subscription) => {
       this.sendCommand(subscription, 'subscribe');
     });
   },
@@ -49,17 +50,17 @@ var Subscriptions = EmberObject.extend({
   },
 
   forget(subscription) {
-    get(this,'subscriptions').removeObject(subscription);
+    this.subscriptions.removeObject(subscription);
   },
 
   findAll(identifier) {
-    return get(this,'subscriptions').filter(function(item) {
+    return this.subscriptions.filter(function(item) {
       return get(item, 'identifier').toLowerCase() === identifier.toLowerCase();
     });
   },
 
   notifyAll(callbackName, ...args) {
-    get(this,'subscriptions').forEach( (subscription) => {
+    this.subscriptions.forEach( (subscription) => {
       this.notify(subscription, callbackName, ...args);
     });
   },
@@ -88,7 +89,7 @@ var Subscriptions = EmberObject.extend({
 
   willDestroy() {
     this._super();
-    get(this, 'subscriptions').forEach(subscription => run(subscription, 'destroy'));
+    this.subscriptions.forEach(subscription => run(subscription, 'destroy'));
   }
 });
 
