@@ -60,6 +60,7 @@ export default EmberObject.extend({
     this._super();
     clearTimeout(this._reopenTimer);
     this.monitor.destroy();
+    this.close();
   },
 
   isClose() {
