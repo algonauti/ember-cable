@@ -1,6 +1,6 @@
 import EmberObject, { get, computed } from '@ember/object';
 
-var Subscription = EmberObject.extend({
+const Subscription = EmberObject.extend({
   subscriptions: null,
   params: null,
 
@@ -29,7 +29,6 @@ var Subscription = EmberObject.extend({
   unsubscribe() {
     return get(this,'subscriptions').remove(this);
   }
-
 });
 
 Subscription.toString = () => 'Subscription';
