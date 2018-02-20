@@ -1,5 +1,4 @@
 import { A } from '@ember/array';
-import { run } from '@ember/runloop';
 import Mixin from '@ember/object/mixin';
 import { getOwner } from '@ember/application';
 import EmberObject, { get } from '@ember/object';
@@ -89,7 +88,7 @@ var Subscriptions = EmberObject.extend({
 
   willDestroy() {
     this._super();
-    this.subscriptions.forEach(subscription => run(subscription, 'destroy'));
+    this.subscriptions.forEach(subscription => subscription.destroy());
   }
 });
 

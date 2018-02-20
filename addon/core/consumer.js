@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 import Subscriptions from 'ember-cable/core/subscriptions';
@@ -19,7 +18,7 @@ export default EmberObject.extend({
 
   willDestroy() {
     this._super();
-    run(this.connection, 'destroy');
-    run(this.subscriptions, 'destroy');
+    this.connection.destroy();
+    this.subscriptions.destroy();
   }
 });

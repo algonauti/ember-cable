@@ -1,7 +1,7 @@
 import { run } from '@ember/runloop';
 import EmberObject, { set, get } from '@ember/object';
 
-var ConnectionMonitor = EmberObject.extend({
+const ConnectionMonitor = EmberObject.extend({
   connection: null,
   stoppedAt: null,
   startedAt: null,
