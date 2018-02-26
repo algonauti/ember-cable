@@ -37,7 +37,14 @@ export default EmberObject.extend({
   },
 
   close() {
+    let ws = this.get('webSocket');
+
+    ['open', 'close', 'error', 'message'].forEach(eventName => {
+      ws[`on${eventName}`] = null;
+    });
+
     tryInvoke(get(this, 'webSocket'), 'close');
+    this.disconnect();
   },
 
   reopen() {
