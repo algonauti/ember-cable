@@ -1,16 +1,16 @@
-import Ember from 'ember';
+import EmberObject, { get, computed } from '@ember/object';
 
-var Subscription = Ember.Object.extend({
+const Subscription = EmberObject.extend({
   subscriptions: null,
-  params: {},
+  params: null,
 
-  identifier: Ember.computed('params', function() {
-    return JSON.stringify(this.get('params'));
+  identifier: computed('params', function() {
+    return JSON.stringify(get(this,'params'));
   }),
 
   init() {
     this._super(...arguments);
-    this.get('subscriptions').add(this);
+    get(this,'subscriptions').add(this);
   },
 
   perform(action, data = {}) {
@@ -19,19 +19,18 @@ var Subscription = Ember.Object.extend({
   },
 
   send(data) {
-    this.get('subscriptions.consumer').send({
+    get(this,'subscriptions.consumer').send({
       command: 'message',
-      identifier: this.get('identifier'),
+      identifier: get(this,'identifier'),
       data: JSON.stringify(data)
     });
   },
 
   unsubscribe() {
-    return this.get('subscriptions').remove(this);
+    return get(this,'subscriptions').remove(this);
   }
-
 });
 
-Subscription[Ember.NAME_KEY] = 'Subscription';
+Subscription.toString = () => 'Subscription';
 
 export default Subscription;

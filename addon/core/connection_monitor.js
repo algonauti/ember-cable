@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import EmberObject, { set, get } from '@ember/object';
 
-var ConnectionMonitor = Ember.Object.extend({
+const ConnectionMonitor = EmberObject.extend({
   connection: null,
   stoppedAt: null,
   startedAt: null,
@@ -9,6 +10,7 @@ var ConnectionMonitor = Ember.Object.extend({
   staleThreshold: 6,
   reconnectAttempts: 0,
   enabled: true,
+  _intervalTimer: null,
 
   init() {
     this._super(...arguments);
@@ -16,66 +18,69 @@ var ConnectionMonitor = Ember.Object.extend({
   },
 
   start() {
-    this.reset();
-    this.set('stoppedAt', null);
-    this.set('startedAt', Date.now());
+    set(this,'reconnectAttempts', 0);
+    set(this, 'stoppedAt', null);
+    set(this, 'startedAt', Date.now());
     this.poll();
   },
 
   connected() {
-    this.reset();
-    this.set('pingedAt', Date.now());
-    this.set('disconnectedAt', null);
+    set(this,'reconnectAttempts', 0);
+    set(this,'pingedAt', Date.now());
+    set(this,'disconnectedAt', null);
   },
 
   disconnected() {
-    this.set('disconnectedAt', Date.now());
+    set(this,'disconnectedAt', Date.now());
   },
 
   enable() {
-    this.set('enabled', true);
+    set(this,'enabled', true);
   },
 
   disable() {
-    this.set('enabled', false);
+    set(this,'enabled', false);
   },
 
   ping() {
-    this.set('pingedAt', Date.now());
-  },
-
-  reset() {
-    this.set('reconnectAttempts', 0);
+    set(this,'pingedAt', Date.now());
   },
 
   poll() {
-    Ember.run.later(this, () => {
-      if (this.get('enabled')) {
-        this.reconnectIfStale();
-        this.poll();
-      }
+    this._intervalTimer = setTimeout(() => {
+      run(() => {
+        if (get(this,'enabled')) {
+          this.reconnectIfStale();
+          this.poll();
+        }
+      });
     }, this.interval());
   },
 
+  willDestroy() {
+    this._super();
+    clearTimeout(this._intervalTimer);
+  },
+
   interval() {
-    return Math.max(3, Math.min(30, 5 * Math.log(this.get('reconnectAttempts') + 1) )) * 1000;
+    return Math.max(3, Math.min(30, 5 * Math.log(get(this,'reconnectAttempts') + 1) )) * 1000;
   },
 
   reconnectIfStale() {
     if(this.connectionIsStale()) {
       this.incrementProperty('reconnectAttempts');
       if(!this.disconnectedRecently()) {
-        this.get('connection').reopen();
+        get(this,'connection').reopen();
       }
     }
   },
 
   connectionIsStale() {
-    return this.secondsSince(this.get('pingedAt') || this.get('startedAt')) > this.get('staleThreshold');
+    return !get(this,'connection').isConnecting() && this.secondsSince(get(this,'pingedAt') || get(this,'startedAt')) > get(this,'staleThreshold');
   },
 
   disconnectedRecently() {
-    return this.get('disconnectedAt') && this.secondsSince(this.get('disconnectedAt') ) < this.get('staleThreshold');
+    return get(this,'disconnectedAt') && this.secondsSince(get(this,'disconnectedAt') ) < get(this,'staleThreshold');
   },
 
   secondsSince(time) {
@@ -83,6 +88,6 @@ var ConnectionMonitor = Ember.Object.extend({
   }
 });
 
-ConnectionMonitor[Ember.NAME_KEY] = 'ConnectionMonitor';
+ConnectionMonitor.toString = () => 'ConnectionMonitor';
 
 export default ConnectionMonitor;

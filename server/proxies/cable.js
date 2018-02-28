@@ -1,9 +1,13 @@
-/*jshint node:true*/
-var proxyPath = '/cable';
+/* eslint-env node */
+'use strict';
+
+const proxyPath = '/cable';
 
 module.exports = function(app, options) {
-  var server = options.httpServer;
-  var proxy = require('http-proxy').createProxyServer({
+  let server = options.httpServer;
+  // For options, see:
+  // https://github.com/nodejitsu/node-http-proxy
+  let proxy = require('http-proxy').createProxyServer({
     target: 'http://localhost:3000',
     ws: true,
     changeOrigin: true
@@ -17,7 +21,7 @@ module.exports = function(app, options) {
     proxy.ws(req, socket, head);
   });
 
-  app.use(proxyPath, function(req, res, next){
+  app.use(proxyPath, function(req, res){
     req.url = proxyPath + '/' + req.url;
     proxy.web(req, res);
   });

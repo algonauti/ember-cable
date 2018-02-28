@@ -1,81 +1,97 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import Mixin from '@ember/object/mixin';
+import { getOwner } from '@ember/application';
+import EmberObject, { get } from '@ember/object';
+import { isEqual, typeOf, tryInvoke } from '@ember/utils';
 import Subscription from 'ember-cable/core/subscription';
 
-var Subscriptions = Ember.Object.extend({
+var Subscriptions = EmberObject.extend({
   consumer: null,
-  subscriptions: Ember.A(),
+  subscriptions: null,
+
+  init() {
+    this._super(...arguments);
+    this.subscriptions = A();
+  },
 
   create(channelName, mixin) {
-    let params = Ember.isEqual(Ember.typeOf(channelName), 'object') ? channelName : { channel: channelName };
-    return Subscription.extend(Ember.Mixin.create(mixin), {
-      subscriptions: this, params: params
-    }).create(Ember.getOwner(this).ownerInjection());
+    let params = isEqual(typeOf(channelName), 'object') ? channelName : { channel: channelName };
+
+    return Subscription.extend(Mixin.create(mixin)).create(
+      getOwner(this).ownerInjection(),
+      { subscriptions: this, params: params }
+    );
   },
 
   add(subscription) {
-    this.get('subscriptions').push(subscription);
+    this.subscriptions.push(subscription);
     this.sendCommand(subscription, 'subscribe');
   },
 
   remove(subscription) {
     this.forget(subscription);
-    if (!this.findAll(subscription.get('identifier')).length) {
+    if (!this.findAll(get(subscription, 'identifier')).length) {
       return this.sendCommand(subscription, 'unsubscribe');
     }
   },
 
   reload() {
-    this.get('subscriptions').forEach( (subscription) => {
+    this.subscriptions.forEach( (subscription) => {
       this.sendCommand(subscription, 'subscribe');
     });
   },
 
   reject(identifier) {
     this.findAll(identifier).forEach( (subscription) => {
-      this.sendCommand(subscription, 'rejected');
+      this.forget(subscription);
+      this.notify(subscription, "rejected");
     });
   },
 
   forget(subscription) {
-    this.get('subscriptions').removeObject(subscription);
+    this.subscriptions.removeObject(subscription);
   },
 
   findAll(identifier) {
-    return this.get('subscriptions').filter(function(item) {
-      return item.get('identifier').toLowerCase() === identifier.toLowerCase();
+    return this.subscriptions.filter(function(item) {
+      return get(item, 'identifier').toLowerCase() === identifier.toLowerCase();
     });
   },
 
   notifyAll(callbackName, ...args) {
-    this.get('subscriptions').forEach( (subscription) => {
+    this.subscriptions.forEach( (subscription) => {
       this.notify(subscription, callbackName, ...args);
     });
   },
 
   notify(subscription, callbackName, ...args) {
     let subscriptions;
-    if (Ember.typeOf(subscription)  === 'string') {
+    if (typeOf(subscription)  === 'string') {
       subscriptions = this.findAll(subscription);
     } else {
       subscriptions = [subscription];
     }
 
     subscriptions.forEach( (subscription) => {
-      Ember.tryInvoke(subscription, callbackName, args);
+      tryInvoke(subscription, callbackName, args);
     });
   },
 
   sendCommand(subscription, command) {
-    let identifier = subscription.get('identifier');
-    if(Ember.isEqual(identifier, '_ping')) {
-      this.get('consumer.connection').isOpen();
+    let identifier = get(subscription, 'identifier');
+    if(isEqual(identifier, '_ping')) {
+      get(this,'consumer.connection').isOpen();
     } else {
-      this.get('consumer').send({command, identifier});
+      get(this,'consumer').send({command, identifier});
     }
-  }
+  },
 
+  willDestroy() {
+    this._super();
+    this.subscriptions.forEach(subscription => subscription.destroy());
+  }
 });
 
-Subscriptions[Ember.NAME_KEY] = 'Subscriptions';
+Subscriptions.toString = () => 'Subscriptions';
 
 export default Subscriptions;
