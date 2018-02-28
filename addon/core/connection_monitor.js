@@ -9,6 +9,7 @@ const ConnectionMonitor = EmberObject.extend({
   disconnectedAt: null,
   staleThreshold: 6,
   reconnectAttempts: 0,
+  enabled: true,
   _intervalTimer: null,
 
   init() {
@@ -33,6 +34,14 @@ const ConnectionMonitor = EmberObject.extend({
     set(this,'disconnectedAt', Date.now());
   },
 
+  enable() {
+    set(this,'enabled', true);
+  },
+
+  disable() {
+    set(this,'enabled', false);
+  },
+
   ping() {
     set(this,'pingedAt', Date.now());
   },
@@ -40,8 +49,10 @@ const ConnectionMonitor = EmberObject.extend({
   poll() {
     this._intervalTimer = setTimeout(() => {
       run(() => {
-        this.reconnectIfStale();
-        this.poll();
+        if (get(this,'enabled')) {
+          this.reconnectIfStale();
+          this.poll();
+        }
       });
     }, this.interval());
   },

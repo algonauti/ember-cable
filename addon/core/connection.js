@@ -83,6 +83,7 @@ export default EmberObject.extend({
   disconnect() {
     set(this, 'connected', false);
     get(this, 'consumer.subscriptions').notifyAll('disconnected');
+    get(this, 'monitor').disable();
   },
 
   onMessage(event) {
