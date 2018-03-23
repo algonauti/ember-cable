@@ -18,6 +18,13 @@ module.exports = {
     'ember/named-functions-in-promises': ['error', { allowSimpleArrowFunction: true }],
   },
   overrides: [
+    // ignore ember-try named functions in promises
+    {
+      files: ['config/ember-try.js'],
+      rules: {
+        'ember/named-functions-in-promises': 'off'
+      }
+    },
     // node files
     {
       files: [
@@ -29,7 +36,8 @@ module.exports = {
       ],
       excludedFiles: [
         'app/**',
-        'addon/**'
+        'addon/**',
+        'tests/dummy/app/**'
       ],
       parserOptions: {
         sourceType: 'script',
