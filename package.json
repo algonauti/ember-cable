@@ -1,6 +1,6 @@
 {
   "name": "ember-cable",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "Power your ember.js application with actioncable",
   "keywords": [
     "ember-addon",
