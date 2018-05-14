@@ -1,6 +1,7 @@
 import { run } from '@ember/runloop';
 import { capitalize } from '@ember/string';
 import { getOwner } from '@ember/application';
+import { readOnly } from '@ember/object/computed';
 import { tryInvoke, isEqual } from '@ember/utils';
 import EmberObject, { set, get } from '@ember/object';
 import ConnectionMonitor from 'ember-cable/core/connection_monitor';
@@ -8,6 +9,7 @@ import ConnectionMonitor from 'ember-cable/core/connection_monitor';
 export default EmberObject.extend({
   consumer: null,
   connected: false,
+  isConnecting: false,
   _reopenTimer: null,
 
   init() {
@@ -17,6 +19,8 @@ export default EmberObject.extend({
       connection: this
     });
   },
+
+  nextConnectionAt: readOnly('monitor.nextConnectionAt'),
 
   send(data) {
     if (this.isOpen()) {
@@ -33,7 +37,10 @@ export default EmberObject.extend({
       };
     });
 
-    set(this, 'webSocket', ws);
+    run(() => {
+      set(this, 'isConnecting', true);
+      set(this, 'webSocket', ws);
+    });
   },
 
   close() {
@@ -74,13 +81,6 @@ export default EmberObject.extend({
     );
   },
 
-  isConnecting() {
-    return isEqual(
-      get(this, 'webSocket').readyState,
-      get(this, 'webSocket').CONNECTING
-    );
-  },
-
   disconnect() {
     set(this, 'connected', false);
     get(this, 'consumer.subscriptions').notifyAll('disconnected');
@@ -114,15 +114,24 @@ export default EmberObject.extend({
   },
 
   onOpen() {
-    set(this, 'connected', true);
-    get(this, 'consumer.subscriptions').reload();
+    run(() => {
+      set(this, 'isConnecting', false);
+      set(this, 'connected', true);
+      get(this, 'consumer.subscriptions').reload();
+    });
   },
 
   onClose() {
+    run(() => {
+      set(this, 'isConnecting', false);
+    });
     this.disconnect();
   },
 
   onError() {
+    run(() => {
+      set(this, 'isConnecting', false);
+    });
     this.disconnect();
   }
 });

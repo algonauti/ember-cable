@@ -1,5 +1,5 @@
 import { run } from '@ember/runloop';
-import EmberObject, { set, get } from '@ember/object';
+import EmberObject, { computed, set, get } from '@ember/object';
 
 const ConnectionMonitor = EmberObject.extend({
   connection: null,
@@ -10,11 +10,15 @@ const ConnectionMonitor = EmberObject.extend({
   staleThreshold: 6,
   reconnectAttempts: 0,
   _intervalTimer: null,
+  _nextPollAt: null,
 
   init() {
     this._super(...arguments);
     this.start();
   },
+
+  nextConnectionAt: computed.and('notConnected', '_nextPollAt'),
+  notConnected: computed.not('connection.connected'),
 
   start() {
     set(this,'reconnectAttempts', 0);
@@ -38,12 +42,18 @@ const ConnectionMonitor = EmberObject.extend({
   },
 
   poll() {
+    const interval = this.interval();
+
     this._intervalTimer = setTimeout(() => {
       run(() => {
         this.reconnectIfStale();
         this.poll();
       });
-    }, this.interval());
+    }, interval);
+
+    run(() => {
+      set(this, '_nextPollAt', Math.round(Date.now() + interval));
+    });
   },
 
   willDestroy() {
@@ -65,7 +75,7 @@ const ConnectionMonitor = EmberObject.extend({
   },
 
   connectionIsStale() {
-    return !get(this,'connection').isConnecting() && this.secondsSince(get(this,'pingedAt') || get(this,'startedAt')) > get(this,'staleThreshold');
+    return !get(this,'connection.isConnecting') && this.secondsSince(get(this,'pingedAt') || get(this,'startedAt')) > get(this,'staleThreshold');
   },
 
   disconnectedRecently() {
