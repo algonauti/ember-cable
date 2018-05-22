@@ -1,4 +1,5 @@
 import EmberObject from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
 import Subscriptions from 'ember-cable/core/subscriptions';
@@ -11,6 +12,9 @@ export default EmberObject.extend({
 
   // Default Values
   url: null,
+
+  isConnecting: readOnly('connection.isConnecting'),
+  nextConnectionAt: readOnly('connection.nextConnectionAt'),
 
   init() {
     this._super(...arguments);

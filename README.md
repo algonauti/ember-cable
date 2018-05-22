@@ -21,6 +21,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
   cableService: Ember.inject.service('cable'),
+  consumer: null,
 
   setupConsumer: Ember.on('init', function() {
     var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
@@ -58,11 +59,20 @@ export default Ember.Controller.extend({
 
     // Send actions to your Action Cable channel class
     subscription.perform("your_channel_action", { hey: "hello" });
+
+    // Save consumer to controller to link up computed props
+    this.set('consumer', consumer);
   }),
 
   updateRecord(data) {
     Ember.debug( "updateRecord(data) -> " + Ember.inspect(data) );
-  }
+  },
+
+  // Flag indicating a connection is being attempted
+  isConnected: Ember.computed.readOnly('consumer.isConnected'),
+
+  // Milliseconds until the next connection attempt
+  nextConnectionAt: Ember.computed.readOnly('consumer.nextConnectionAt'),
 });
 
 ```
