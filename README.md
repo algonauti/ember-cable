@@ -69,7 +69,7 @@ export default Ember.Controller.extend({
   },
 
   // Flag indicating a connection is being attempted
-  isConnected: Ember.computed.readOnly('consumer.isConnected'),
+  isConnecting: Ember.computed.readOnly('consumer.isConnecting'),
 
   // Milliseconds until the next connection attempt
   nextConnectionAt: Ember.computed.readOnly('consumer.nextConnectionAt'),
