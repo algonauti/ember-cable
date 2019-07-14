@@ -77,6 +77,14 @@ export default Ember.Controller.extend({
 
 ```
 
-## License
+=======
+Contributing
+------------------------------------------------------------------------------
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
+
+
+License
+------------------------------------------------------------------------------
 
 ember-cable is released under the [MIT License](http://www.opensource.org/licenses/MIT).
