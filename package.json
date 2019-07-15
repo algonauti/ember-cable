@@ -1,6 +1,6 @@
 {
-  "name": "ember-cable",
-  "version": "0.8.1",
+  "name": "@algonauti/ember-cable",
+  "version": "0.9.0",
   "description": "Power your ember.js application with actioncable",
   "keywords": [
     "ember-addon",
@@ -15,12 +15,11 @@
   "license": "MIT",
   "author": "Salvatore Ferrucci",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/algonauti/ember-cable.git"
+    "url": "git+https://github.com/algonauti/ember-cable.git"
   },
   "bugs": {
     "url": "https://github.com/algonauti/ember-cable/issues"
@@ -71,5 +70,7 @@
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
-  }
+  },
+  "homepage": "https://github.com/algonauti/ember-cable#readme",
+  "main": "index.js"
 }

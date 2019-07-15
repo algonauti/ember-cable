@@ -3,7 +3,7 @@ import Mixin from '@ember/object/mixin';
 import { getOwner } from '@ember/application';
 import EmberObject, { get } from '@ember/object';
 import { isEqual, typeOf, tryInvoke } from '@ember/utils';
-import Subscription from 'ember-cable/core/subscription';
+import Subscription from '@algonauti/ember-cable/core/subscription';
 
 var Subscriptions = EmberObject.extend({
   consumer: null,

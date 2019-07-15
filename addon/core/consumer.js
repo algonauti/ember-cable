@@ -2,8 +2,8 @@ import EmberObject from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
-import Subscriptions from 'ember-cable/core/subscriptions';
-import Connection from 'ember-cable/core/connection';
+import Subscriptions from '@algonauti/ember-cable/core/subscriptions';
+import Connection from '@algonauti/ember-cable/core/connection';
 import { get } from '@ember/object';
 
 export default EmberObject.extend({

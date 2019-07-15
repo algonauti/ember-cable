@@ -4,7 +4,7 @@ import { getOwner } from '@ember/application';
 import { readOnly } from '@ember/object/computed';
 import { tryInvoke, isEqual } from '@ember/utils';
 import EmberObject, { set, get } from '@ember/object';
-import ConnectionMonitor from 'ember-cable/core/connection_monitor';
+import ConnectionMonitor from '@algonauti/ember-cable/core/connection_monitor';
 
 export default EmberObject.extend({
   consumer: null,

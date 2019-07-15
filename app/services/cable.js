@@ -1,1 +1,1 @@
-export { default } from 'ember-cable/services/cable';
+export { default } from '@algonauti/ember-cable/services/cable';

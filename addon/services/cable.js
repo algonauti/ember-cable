@@ -1,6 +1,6 @@
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
-import Consumer from 'ember-cable/core/consumer';
+import Consumer from '@algonauti/ember-cable/core/consumer';
 
 export default Service.extend({
   init() {

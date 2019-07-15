@@ -8,7 +8,7 @@ This add-on enables simple integration of Rails Action Cable into Ember apps.
 ### Installation
 run the following command from inside your ember-cli project:
 
-    ember install ember-cable
+    ember install @algonauti/ember-cable
 
 ## Basic Usage
 
@@ -77,7 +77,6 @@ export default Ember.Controller.extend({
 
 ```
 
-=======
 Contributing
 ------------------------------------------------------------------------------
 
