@@ -1,6 +1,6 @@
 {
   "name": "@algonauti/ember-cable",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Power your ember.js application with actioncable",
   "keywords": [
     "ember-addon",
