@@ -8,7 +8,7 @@ module.exports = function(app, options) {
   // For options, see:
   // https://github.com/nodejitsu/node-http-proxy
   let proxy = require('http-proxy').createProxyServer({
-    target: 'http://localhost:3000',
+    target: options.proxy || 'http://localhost:3000',
     ws: true,
     changeOrigin: true
   });
