@@ -17,14 +17,20 @@ needed in the application.
 
 ```js
 // app/controllers/application.js
-import Ember from 'ember';
+import Controller from '@ember/controller';
+import Mixin from '@ember/object/mixin';
+import { inject as service } from '@ember/service';
+import { readOnly } from '@ember/object/computed';
+import { on } from '@ember/object/evented';
+import { get, set } from '@ember/object';
+import { debug } from '@ember/debug';
 
-export default Ember.Controller.extend({
-  cableService: Ember.inject.service('cable'),
+export default Controller.extend({
+  cableService: service('cable'),
   consumer: null,
 
-  setupConsumer: Ember.on('init', function() {
-    var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
+  setupConsumer: on('init', function() {
+    const consumer = get(this, 'cableService').createConsumer('ws://localhost:4200/cable');
 
     consumer.subscriptions.create("NotificationChannel", {
       connected() {
@@ -32,10 +38,10 @@ export default Ember.Controller.extend({
         this.perform('hello');
       },
       received(data) {
-        Ember.debug( "received(data) -> " + Ember.inspect(data) );
+        debug( "received(data) -> " + data );
       },
       disconnected() {
-        Ember.debug("NotificationChannel#disconnected");
+        debug("NotificationChannel#disconnected");
       }
     });
 
@@ -47,11 +53,11 @@ export default Ember.Controller.extend({
     });
 
     // Using mixin and inject your services
-    var channelMixin = Ember.Mixin.create({
-      store: Ember.inject.service(),
+    const channelMixin = Mixin.create({
+      store: service(),
 
       received(data) {
-        this.get("store").pushPayload(data);
+        get(this, "store").pushPayload(data);
       }
     });
 
@@ -61,18 +67,18 @@ export default Ember.Controller.extend({
     subscription.perform("your_channel_action", { hey: "hello" });
 
     // Save consumer to controller to link up computed props
-    this.set('consumer', consumer);
+    set(this, 'consumer', consumer);
   }),
 
   updateRecord(data) {
-    Ember.debug( "updateRecord(data) -> " + Ember.inspect(data) );
+    debug( "updateRecord(data) -> " + data );
   },
 
   // Flag indicating a connection is being attempted
-  isConnecting: Ember.computed.readOnly('consumer.isConnecting'),
+  isConnecting: readOnly('consumer.isConnecting'),
 
   // Milliseconds until the next connection attempt
-  nextConnectionAt: Ember.computed.readOnly('consumer.nextConnectionAt'),
+  nextConnectionAt: readOnly('consumer.nextConnectionAt'),
 });
 
 ```
