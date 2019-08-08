@@ -17,20 +17,25 @@ needed in the application.
 
 ```js
 // app/controllers/application.js
-import Controller from '@ember/controller';
-import Mixin from '@ember/object/mixin';
-import { inject as service } from '@ember/service';
-import { readOnly } from '@ember/object/computed';
-import { on } from '@ember/object/evented';
-import { get, set } from '@ember/object';
-import { debug } from '@ember/debug';
-
 export default Controller.extend({
-  cableService: service('cable'),
+
+  cable: service(),
+
   consumer: null,
 
-  setupConsumer: on('init', function() {
-    const consumer = get(this, 'cableService').createConsumer('ws://localhost:4200/cable');
+  // Flag indicating a connection is being attempted
+  isConnecting: readOnly('consumer.isConnecting'),
+
+  // Milliseconds until the next connection attempt
+  nextConnectionAt: readOnly('consumer.nextConnectionAt'),
+
+  init() {
+    this._super(...arguments);
+    this._setupConsumer();
+  },
+
+  _setupConsumer() {
+    const consumer = get(this, 'cable').createConsumer('ws://localhost:4200/cable');
 
     consumer.subscriptions.create("NotificationChannel", {
       connected() {
@@ -46,9 +51,12 @@ export default Controller.extend({
     });
 
     // Passing Parameters to Channel
-    const subscription = consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
-      received: (data) => {
-        this.updateRecord(data);
+    const subscription = consumer.subscriptions.create({
+      channel: 'NotificationChannel',
+      room: 'Best Room'
+    }, {
+      received(data) {
+        this._updateRecord(data);
       }
     });
 
@@ -68,17 +76,12 @@ export default Controller.extend({
 
     // Save consumer to controller to link up computed props
     set(this, 'consumer', consumer);
-  }),
-
-  updateRecord(data) {
-    debug( "updateRecord(data) -> " + data );
   },
 
-  // Flag indicating a connection is being attempted
-  isConnecting: readOnly('consumer.isConnecting'),
+  _updateRecord(data) {
+    debug( "updateRecord(data) -> " + data );
+  }
 
-  // Milliseconds until the next connection attempt
-  nextConnectionAt: readOnly('consumer.nextConnectionAt'),
 });
 
 ```
