@@ -20,12 +20,9 @@ needed in the application.
 export default Controller.extend({
 
   cable: service(),
-
   consumer: null,
-
   // Flag indicating a connection is being attempted
   isConnecting: readOnly('consumer.isConnecting'),
-
   // Milliseconds until the next connection attempt
   nextConnectionAt: readOnly('consumer.nextConnectionAt'),
 
@@ -50,31 +47,7 @@ export default Controller.extend({
       }
     });
 
-    // Passing Parameters to Channel
-    const subscription = consumer.subscriptions.create({
-      channel: 'NotificationChannel',
-      room: 'Best Room'
-    }, {
-      received(data) {
-        this._updateRecord(data);
-      }
-    });
-
-    // Using mixin and inject your services
-    const channelMixin = Mixin.create({
-      store: service(),
-
-      received(data) {
-        get(this, "store").pushPayload(data);
-      }
-    });
-
-    consumer.subscriptions.create({ channel: 'NotificationChannel' }, channelMixin);
-
-    // Send actions to your Action Cable channel class
-    subscription.perform("your_channel_action", { hey: "hello" });
-
-    // Save consumer to controller to link up computed props
+    // Set consumer in controller to link up computed props
     set(this, 'consumer', consumer);
   },
 
@@ -86,6 +59,31 @@ export default Controller.extend({
 
 ```
 
+Passing parameters to Channel and sending action to your Action Cable channel class:
+```js
+const subscription = consumer.subscriptions.create({
+  channel: 'NotificationChannel',
+  room: 'Best Room'
+}, {
+  received(data) {
+    this._updateRecord(data);
+  }
+});
+
+subscription.perform("your_channel_action", { hey: "hello" });
+```
+Using mixin and inject your services:
+```js
+const channelMixin = Mixin.create({
+  store: service(),
+
+  received(data) {
+    get(this, "store").pushPayload(data);
+  }
+});
+
+consumer.subscriptions.create({ channel: 'NotificationChannel' }, channelMixin);
+```
 Contributing
 ------------------------------------------------------------------------------
 
