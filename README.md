@@ -17,14 +17,22 @@ needed in the application.
 
 ```js
 // app/controllers/application.js
-import Ember from 'ember';
+export default Controller.extend({
 
-export default Ember.Controller.extend({
-  cableService: Ember.inject.service('cable'),
+  cable: service(),
   consumer: null,
+  // Flag indicating a connection is being attempted
+  isConnecting: readOnly('consumer.isConnecting'),
+  // Milliseconds until the next connection attempt
+  nextConnectionAt: readOnly('consumer.nextConnectionAt'),
 
-  setupConsumer: Ember.on('init', function() {
-    var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
+  init() {
+    this._super(...arguments);
+    this._setupConsumer();
+  },
+
+  _setupConsumer() {
+    const consumer = get(this, 'cable').createConsumer('ws://localhost:4200/cable');
 
     consumer.subscriptions.create("NotificationChannel", {
       connected() {
@@ -32,51 +40,50 @@ export default Ember.Controller.extend({
         this.perform('hello');
       },
       received(data) {
-        Ember.debug( "received(data) -> " + Ember.inspect(data) );
+        debug( "received(data) -> " + data );
       },
       disconnected() {
-        Ember.debug("NotificationChannel#disconnected");
+        debug("NotificationChannel#disconnected");
       }
     });
 
-    // Passing Parameters to Channel
-    const subscription = consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
-      received: (data) => {
-        this.updateRecord(data);
-      }
-    });
-
-    // Using mixin and inject your services
-    var channelMixin = Ember.Mixin.create({
-      store: Ember.inject.service(),
-
-      received(data) {
-        this.get("store").pushPayload(data);
-      }
-    });
-
-    consumer.subscriptions.create({ channel: 'NotificationChannel' }, channelMixin);
-
-    // Send actions to your Action Cable channel class
-    subscription.perform("your_channel_action", { hey: "hello" });
-
-    // Save consumer to controller to link up computed props
-    this.set('consumer', consumer);
-  }),
-
-  updateRecord(data) {
-    Ember.debug( "updateRecord(data) -> " + Ember.inspect(data) );
+    // Set consumer in controller to link up computed props
+    set(this, 'consumer', consumer);
   },
 
-  // Flag indicating a connection is being attempted
-  isConnecting: Ember.computed.readOnly('consumer.isConnecting'),
+  _updateRecord(data) {
+    debug( "updateRecord(data) -> " + data );
+  }
 
-  // Milliseconds until the next connection attempt
-  nextConnectionAt: Ember.computed.readOnly('consumer.nextConnectionAt'),
 });
 
 ```
 
+Passing parameters to Channel and sending action to your Action Cable channel class:
+```js
+const subscription = consumer.subscriptions.create({
+  channel: 'NotificationChannel',
+  room: 'Best Room'
+}, {
+  received(data) {
+    this._updateRecord(data);
+  }
+});
+
+subscription.perform("your_channel_action", { hey: "hello" });
+```
+Using mixin and inject your services:
+```js
+const channelMixin = Mixin.create({
+  store: service(),
+
+  received(data) {
+    get(this, "store").pushPayload(data);
+  }
+});
+
+consumer.subscriptions.create({ channel: 'NotificationChannel' }, channelMixin);
+```
 Contributing
 ------------------------------------------------------------------------------
 
