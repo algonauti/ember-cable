@@ -51,6 +51,11 @@ export default Controller.extend({
     set(this, 'consumer', consumer);
   },
 
+  willDestroy() {
+    // Close websocket connection
+    get(this, 'consumer').destroy();
+  },
+
   _updateRecord(data) {
     debug( "updateRecord(data) -> " + data );
   }
