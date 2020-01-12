@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@ember/optional-features": "^1.0.0",
+    "@rails/actioncable": "^6.0.2-1",
     "babel-eslint": "^10.0.3",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.5.2",
