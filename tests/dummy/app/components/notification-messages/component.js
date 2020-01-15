@@ -27,15 +27,19 @@ export default Component.extend({
     });
 
     // Passing Parameters to Channel
-    consumer.createSubscription({ channel: 'BroadcastChannel', room: 'BestRoom' }, {
+    let subscription = consumer.createSubscription({ channel: 'BroadcastChannel', room: 'BestRoom' }, {
       connected() {
         this.perform('ping', { foo: 'bar' });
       },
-
       received: (data) => {
         this._updateRecord(data);
       }
     });
+
+    setTimeout(() => {
+      subscription.perform('ping', { foo: 'bar' });
+    }, 3000);
+
   },
 
   _updateRecord(data) {

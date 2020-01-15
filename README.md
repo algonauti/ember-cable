@@ -34,7 +34,7 @@ export default Controller.extend({
   _setupConsumer() {
     const consumer = get(this, 'cable').createConsumer('ws://localhost:4200/cable');
 
-    consumer.subscriptions.create("NotificationChannel", {
+    consumer.createSubscription('BroadcastChannel', {
       connected() {
         this.perform('hello', { foo: 'bar' });
         this.perform('hello');
@@ -43,10 +43,9 @@ export default Controller.extend({
         debug( "received(data) -> " + data );
       },
       disconnected() {
-        debug("NotificationChannel#disconnected");
+        debug("BroadcastChannel#disconnected");
       }
     });
-
     // Set consumer in controller to link up computed props
     set(this, 'consumer', consumer);
   },
@@ -66,7 +65,7 @@ export default Controller.extend({
 
 Passing parameters to Channel and sending action to your Action Cable channel class:
 ```js
-const subscription = consumer.subscriptions.create({
+const subscription = consumer.createSubscription({
   channel: 'NotificationChannel',
   room: 'Best Room'
 }, {
@@ -87,7 +86,7 @@ const channelMixin = Mixin.create({
   }
 });
 
-consumer.subscriptions.create({ channel: 'NotificationChannel' }, channelMixin);
+consumer.createSubscription({ channel: 'NotificationChannel' }, channelMixin);
 ```
 Contributing
 ------------------------------------------------------------------------------
