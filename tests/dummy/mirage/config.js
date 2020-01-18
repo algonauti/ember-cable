@@ -1,4 +1,5 @@
-import { Server } from 'mock-socket';
+import { Server, WebSocket } from 'mock-socket';
+import { adapters } from '@rails/actioncable';
 
 function startPing(socket) {
   setTimeout(() => {
@@ -23,16 +24,16 @@ function processMessage(socket, data) {
   } else if (message.command == 'message') {
     let payload = {
       identifier: message.identifier,
-      message: { action: 'pong' }
+      message: message.data
     }
     socket.send(JSON.stringify(payload));
   }
 }
 
-export default function() {
-  const mockServer = new Server('ws://localhost:4200/cable');
+function createActionCableMockServer(url) {
+  const actionCableMockServer = new Server(url);
 
-  mockServer.on('connection', socket => {
+  actionCableMockServer.on('connection', socket => {
     sendWelcomeMessage(socket);
     startPing(socket);
 
@@ -40,4 +41,14 @@ export default function() {
       processMessage(socket, data)
     });
   });
+  adapters.WebSocket = WebSocket;
+  adapters.actionCableMockServer = actionCableMockServer;
+}
+
+export default function() {
+  if (adapters.actionCableMockServer) {
+    adapters.actionCableMockServer.stop();
+    delete adapters.actionCableMockServer;
+  }
+  createActionCableMockServer('ws://localhost:4200/cable');
 }

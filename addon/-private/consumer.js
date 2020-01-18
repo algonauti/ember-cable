@@ -16,6 +16,14 @@ export default EmberObject.extend({
     return this._consumer.connect();
   },
 
+  disconnect() {
+    return this._consumer.disconnect();
+  },
+
+  connectionIsOpen() {
+    return this._consumer.connection.getState() == 'open';
+  },
+
   createSubscription(channelName, mixin) {
     let subscriptionHandler = EmberObject.extend(mixin).extend({
       toString() {
