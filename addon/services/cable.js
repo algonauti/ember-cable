@@ -1,6 +1,5 @@
 import Service from '@ember/service';
-import { getOwner } from '@ember/application';
-import Consumer from '@algonauti/ember-cable/core/consumer';
+import Consumer from '@algonauti/ember-cable/-private/consumer';
 
 export default Service.extend({
   init() {
@@ -9,8 +8,11 @@ export default Service.extend({
   },
 
   createConsumer(url) {
-    let consumer = Consumer.create(getOwner(this).ownerInjection(), { url: url });
-    this._consumers.push(consumer);
+    let consumer = Consumer.createConsumer(this, url);
+
+    if (consumer.connect()) {
+      this._consumers.push(consumer);
+    }
     return consumer;
   },
 
