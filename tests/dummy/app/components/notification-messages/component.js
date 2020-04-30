@@ -11,30 +11,38 @@ export default Component.extend({
   },
 
   _setupConsumer() {
-    var consumer = this.get('cable').createConsumer('ws://localhost:4200/cable');
+    let consumer = this.cable.createConsumer('ws://localhost:4200/cable');
 
-    consumer.subscriptions.create('NotificationChannel', {
+    consumer.createSubscription('BroadcastChannel', {
       connected() {
-        this.perform('hello', { foo: 'bar' });
-        this.perform('hello');
+        debug('BroadcastChannel#connected');
+        this.perform('ping');
       },
       received(data) {
         debug( "received(data) -> " + inspect(data) );
       },
       disconnected() {
-        debug("NotificationChannel#disconnected");
+        debug("BroadcastChannel#disconnected");
       }
     });
 
     // Passing Parameters to Channel
-    consumer.subscriptions.create({ channel: 'NotificationChannel', room: 'Best Room' }, {
+    let subscription = consumer.createSubscription({ channel: 'BroadcastChannel', room: 'BestRoom' }, {
+      connected() {
+        this.perform('ping', { foo: 'bar' });
+      },
       received: (data) => {
         this._updateRecord(data);
       }
     });
+
+    setTimeout(() => {
+      subscription.perform('ping', { foo: 'bar' });
+    }, 3000);
+
   },
 
   _updateRecord(data) {
-    debug( "updateRecord(data) -> " + inspect(data) );
-  }
+     debug( "updateRecord(data) -> " + inspect(data) );
+   }
 });
