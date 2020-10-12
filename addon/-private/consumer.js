@@ -12,7 +12,7 @@ export default class Consumer extends EmberObject {
   }
 
   init() {
-    this._super(...arguments);
+    this.super(...arguments);
     this._consumer = createConsumer(this.url);
   }
 

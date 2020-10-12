@@ -18,7 +18,7 @@ export default class CableService extends Service {
   }
 
   willDestroy() {
-    this._super();
+    this.super();
     this._consumers.forEach(consumer => consumer.destroy());
   }
 }
