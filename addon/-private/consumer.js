@@ -5,12 +5,12 @@ export default class EmberCableConsumer extends Consumer {
     return new EmberCableConsumer(url);
   }
 
-  createSubscription(channelName, mixin) {
-    return this.subscriptions.create(channelName, mixin);
+  get connectionIsOpen() {
+    return this.connection.isOpen();
   }
 
-  connectionIsOpen() {
-    return this.connection.isOpen();
+  createSubscription(channelName, mixin) {
+    return this.subscriptions.create(channelName, mixin);
   }
 
   destroy() {
