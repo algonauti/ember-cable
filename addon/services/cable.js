@@ -9,7 +9,7 @@ export default class CableService extends Service {
   }
 
   createConsumer(url) {
-    let consumer = Consumer.createConsumer(url);
+    let consumer = new Consumer(url);
 
     if (consumer.connect()) {
       this._consumers.push(consumer);

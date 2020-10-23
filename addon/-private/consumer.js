@@ -1,9 +1,6 @@
 import { Consumer } from '@rails/actioncable';
 
-export default class EmberCableConsumer extends Consumer {
-  static createConsumer(url) {
-    return new EmberCableConsumer(url);
-  }
+export default class CableConsumer extends Consumer {
 
   get connectionIsOpen() {
     return this.connection.isOpen();
