@@ -20,6 +20,8 @@ needed in the application.
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { debug, inspect } from '@ember/debug';
+import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
 
 export default class NotificationMessagesComponent extends Component {
   @service cable;
@@ -59,6 +61,17 @@ export default class NotificationMessagesComponent extends Component {
       }
     });
 
+    // Using mixin and inject your services:
+    let subscriptionHandler = EmberObject.extend({
+      notification2: service('notification'),
+
+      connected() {
+        this.notification2.notify("subscriptionHandler#connected");
+      },
+    }).create(getOwner(this).ownerInjection());
+
+    consumer.createSubscription({ channel: 'BroadcastChannel' }, subscriptionHandler);
+
     setTimeout(() => {
       subscription.perform('ping', { foo: 'bar' });
     }, 3000);
@@ -84,4 +97,3 @@ License
 ------------------------------------------------------------------------------
 
 ember-cable is released under the [MIT License](http://www.opensource.org/licenses/MIT).
-
