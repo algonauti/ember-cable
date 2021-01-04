@@ -4,6 +4,7 @@ import { debug, inspect } from '@ember/debug';
 
 export default class NotificationMessagesComponent extends Component {
   @service cable;
+  @service notification;
 
   constructor() {
     super(...arguments);
@@ -33,6 +34,9 @@ export default class NotificationMessagesComponent extends Component {
       },
       received: (data) => {
         this._updateRecord(data);
+      },
+      disconnected: () => {
+        this.notification.notify("BroadcastChannel#disconnected");
       }
     });
 
