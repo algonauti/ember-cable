@@ -16,77 +16,63 @@ Once the addon is installed, the cable service can be injected wherever
 needed in the application.
 
 ```js
-// app/controllers/application.js
-export default Controller.extend({
+// tests/dummy/app/components/notification-messages/component.js
+import Component from '@glimmer/component';
+import { inject as service } from '@ember/service';
+import { debug, inspect } from '@ember/debug';
 
-  cable: service(),
-  consumer: null,
-  // Flag indicating a connection is being attempted
-  isConnecting: readOnly('consumer.isConnecting'),
-  // Milliseconds until the next connection attempt
-  nextConnectionAt: readOnly('consumer.nextConnectionAt'),
+export default class NotificationMessagesComponent extends Component {
+  @service cable;
+  @service notification;
 
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
     this._setupConsumer();
-  },
+  }
 
   _setupConsumer() {
-    const consumer = get(this, 'cable').createConsumer('ws://localhost:4200/cable');
+    let consumer = this.cable.createConsumer('ws://localhost:4200/cable');
 
     consumer.createSubscription('BroadcastChannel', {
       connected() {
-        this.perform('hello', { foo: 'bar' });
-        this.perform('hello');
+        debug('BroadcastChannel#connected');
+        this.perform('ping');
       },
       received(data) {
-        debug( "received(data) -> " + data );
+        debug( "received(data) -> " + inspect(data) );
       },
       disconnected() {
         debug("BroadcastChannel#disconnected");
       }
     });
-    // Set consumer in controller to link up computed props
-    set(this, 'consumer', consumer);
-  },
 
-  willDestroy() {
-    // Close websocket connection
-    get(this, 'consumer').destroy();
-  },
+    // Passing Parameters to Channel
+    let subscription = consumer.createSubscription({ channel: 'BroadcastChannel', room: 'BestRoom' }, {
+      connected() {
+        this.perform('ping', { foo: 'bar' });
+      },
+      received: (data) => {
+        this._updateRecord(data);
+      },
+      disconnected: () => {
+        this.notification.notify("BroadcastChannel#disconnected");
+      }
+    });
+
+    setTimeout(() => {
+      subscription.perform('ping', { foo: 'bar' });
+    }, 3000);
+
+    setTimeout(() => {
+      this.cable.destroy();
+    }, 9000);
+
+  }
 
   _updateRecord(data) {
-    debug( "updateRecord(data) -> " + data );
-  }
-
-});
-
-```
-
-Passing parameters to Channel and sending action to your Action Cable channel class:
-```js
-const subscription = consumer.createSubscription({
-  channel: 'NotificationChannel',
-  room: 'Best Room'
-}, {
-  received(data) {
-    this._updateRecord(data);
-  }
-});
-
-subscription.perform("your_channel_action", { hey: "hello" });
-```
-Using mixin and inject your services:
-```js
-const channelMixin = Mixin.create({
-  store: service(),
-
-  received(data) {
-    get(this, "store").pushPayload(data);
-  }
-});
-
-consumer.createSubscription({ channel: 'NotificationChannel' }, channelMixin);
+     debug( "updateRecord(data) -> " + inspect(data) );
+   }
+}
 ```
 Contributing
 ------------------------------------------------------------------------------
