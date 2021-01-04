@@ -10,7 +10,4 @@ export default class CableConsumer extends Consumer {
     return this.subscriptions.create(channelName, mixin);
   }
 
-  destroy() {
-    // TODO
-  }
 }

@@ -1,14 +1,14 @@
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { debug, inspect } from '@ember/debug';
 
-export default Component.extend({
-  cable: service('cable'),
+export default class NotificationMessagesComponent extends Component {
+  @service cable;
 
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
     this._setupConsumer();
-  },
+  }
 
   _setupConsumer() {
     let consumer = this.cable.createConsumer('ws://localhost:4200/cable');
@@ -40,9 +40,13 @@ export default Component.extend({
       subscription.perform('ping', { foo: 'bar' });
     }, 3000);
 
-  },
+    setTimeout(() => {
+      this.cable.destroy();
+    }, 9000);
+
+  }
 
   _updateRecord(data) {
      debug( "updateRecord(data) -> " + inspect(data) );
    }
-});
+}
