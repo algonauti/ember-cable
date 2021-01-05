@@ -1,14 +1,18 @@
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { debug, inspect } from '@ember/debug';
+import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
 
-export default Component.extend({
-  cable: service('cable'),
 
-  init() {
-    this._super(...arguments);
+export default class NotificationMessagesComponent extends Component {
+  @service cable;
+  @service notification;
+
+  constructor() {
+    super(...arguments);
     this._setupConsumer();
-  },
+  }
 
   _setupConsumer() {
     let consumer = this.cable.createConsumer('ws://localhost:4200/cable');
@@ -33,16 +37,34 @@ export default Component.extend({
       },
       received: (data) => {
         this._updateRecord(data);
+      },
+      disconnected: () => {
+        this.notification.notify("BroadcastChannel#disconnected");
       }
     });
+
+    // Using mixin and inject your services:
+    let subscriptionHandler = EmberObject.extend({
+      notification2: service('notification'),
+
+      connected() {
+        this.notification2.notify("subscriptionHandler#connected");
+      },
+    }).create(getOwner(this).ownerInjection());
+
+    consumer.createSubscription({ channel: 'BroadcastChannel' }, subscriptionHandler);
 
     setTimeout(() => {
       subscription.perform('ping', { foo: 'bar' });
     }, 3000);
 
-  },
+    setTimeout(() => {
+      this.cable.destroy();
+    }, 9000);
+
+  }
 
   _updateRecord(data) {
      debug( "updateRecord(data) -> " + inspect(data) );
    }
-});
+}

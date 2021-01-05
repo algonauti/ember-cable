@@ -7,20 +7,20 @@ module('Unit | Service | cable', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  test('it creates a new consumer', async function(assert) {
-    let service = this.owner.lookup('service:cable');
-    let consumer = service.createConsumer('ws://localhost:4200/cable');
+  hooks.beforeEach( function() {
+    this.consumer = this.owner.lookup('service:cable').createConsumer(
+      'ws://localhost:4200/cable'
+    );
+  });
 
-    later(self, function() {
-      assert.ok(consumer.connectionIsOpen());
+  test('creates a new consumer', async function(assert) {
+    later(self, () => {
+      assert.ok(this.consumer.connectionIsOpen);
     }, 10);
   });
 
-  test('it creates a new subscription', async function(assert) {
-    let service = this.owner.lookup('service:cable');
-    let consumer = service.createConsumer('ws://localhost:4200/cable');
-
-    consumer.createSubscription('BroadcastChannel', {
+  test('creates a subscription without params', async function(assert) {
+    this.consumer.createSubscription('BroadcastChannel', {
       connected() {
         this.perform('echo');
       },
@@ -29,9 +29,10 @@ module('Unit | Service | cable', function(hooks) {
         assert.equal(data.action, 'echo');
       }
     });
+  });
 
-    // Passing Parameters to Channel
-    consumer.createSubscription({ channel: 'BroadcastChannel', room: 'BestRoom' }, {
+  test('creates a subscription passing params', async function(assert) {
+    this.consumer.createSubscription({ channel: 'BroadcastChannel', room: 'BestRoom' }, {
       connected() {
         this.perform('echo', { foo: 'bar' });
       },
@@ -42,4 +43,5 @@ module('Unit | Service | cable', function(hooks) {
       }
     });
   });
+
 });

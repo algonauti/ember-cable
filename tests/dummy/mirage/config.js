@@ -1,4 +1,5 @@
-import { Server, WebSocket } from 'mock-socket';
+import { WebSocket as MockWebSocket, Server as MockServer } from "mock-socket"
+
 import { adapters } from '@rails/actioncable';
 
 function startPing(socket) {
@@ -31,7 +32,7 @@ function processMessage(socket, data) {
 }
 
 function createActionCableMockServer(url) {
-  const actionCableMockServer = new Server(url);
+  const actionCableMockServer = new MockServer(url);
 
   actionCableMockServer.on('connection', socket => {
     sendWelcomeMessage(socket);
@@ -41,7 +42,7 @@ function createActionCableMockServer(url) {
       processMessage(socket, data)
     });
   });
-  adapters.WebSocket = WebSocket;
+  adapters.WebSocket = MockWebSocket;
   adapters.actionCableMockServer = actionCableMockServer;
 }
 
