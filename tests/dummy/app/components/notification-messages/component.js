@@ -43,6 +43,7 @@ export default class NotificationMessagesComponent extends Component {
       }
     });
 
+    /* eslint-disable */
     // Using mixin and inject your services:
     let subscriptionHandler = EmberObject.extend({
       notification2: service('notification'),
@@ -53,6 +54,7 @@ export default class NotificationMessagesComponent extends Component {
     }).create(getOwner(this).ownerInjection());
 
     consumer.createSubscription({ channel: 'BroadcastChannel' }, subscriptionHandler);
+    /* eslint-enable */
 
     setTimeout(() => {
       subscription.perform('ping', { foo: 'bar' });
