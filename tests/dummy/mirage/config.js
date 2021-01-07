@@ -1,16 +1,18 @@
-import { WebSocket as MockWebSocket, Server as MockServer } from "mock-socket"
+import { WebSocket as MockWebSocket, Server as MockServer } from 'mock-socket';
 
 import { adapters } from '@rails/actioncable';
 
 function startPing(socket) {
   setTimeout(() => {
-    socket.send(JSON.stringify({ type: 'ping', message: new Date().getTime() }));
-    startPing(socket)
+    socket.send(
+      JSON.stringify({ type: 'ping', message: new Date().getTime() })
+    );
+    startPing(socket);
   }, 3000);
 }
 
 function sendWelcomeMessage(socket) {
-  socket.send(JSON.stringify({ type: "welcome" }));
+  socket.send(JSON.stringify({ type: 'welcome' }));
 }
 
 function processMessage(socket, data) {
@@ -19,14 +21,14 @@ function processMessage(socket, data) {
   if (message.command == 'subscribe') {
     let payload = {
       identifier: message.identifier,
-      type: "confirm_subscription"
-    }
+      type: 'confirm_subscription',
+    };
     socket.send(JSON.stringify(payload));
   } else if (message.command == 'message') {
     let payload = {
       identifier: message.identifier,
-      message: message.data
-    }
+      message: message.data,
+    };
     socket.send(JSON.stringify(payload));
   }
 }
@@ -34,19 +36,19 @@ function processMessage(socket, data) {
 function createActionCableMockServer(url) {
   const actionCableMockServer = new MockServer(url);
 
-  actionCableMockServer.on('connection', socket => {
+  actionCableMockServer.on('connection', (socket) => {
     sendWelcomeMessage(socket);
     startPing(socket);
 
     socket.on('message', (data) => {
-      processMessage(socket, data)
+      processMessage(socket, data);
     });
   });
   adapters.WebSocket = MockWebSocket;
   adapters.actionCableMockServer = actionCableMockServer;
 }
 
-export default function() {
+export default function () {
   if (adapters.actionCableMockServer) {
     adapters.actionCableMockServer.stop();
     delete adapters.actionCableMockServer;

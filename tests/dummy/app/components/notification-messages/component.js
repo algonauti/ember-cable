@@ -4,7 +4,6 @@ import { debug, inspect } from '@ember/debug';
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 
-
 export default class NotificationMessagesComponent extends Component {
   @service cable;
   @service notification;
@@ -23,25 +22,28 @@ export default class NotificationMessagesComponent extends Component {
         this.perform('ping');
       },
       received(data) {
-        debug( "received(data) -> " + inspect(data) );
+        debug('received(data) -> ' + inspect(data));
       },
       disconnected() {
-        debug("BroadcastChannel#disconnected");
-      }
+        debug('BroadcastChannel#disconnected');
+      },
     });
 
     // Passing Parameters to Channel
-    let subscription = consumer.createSubscription({ channel: 'BroadcastChannel', room: 'BestRoom' }, {
-      connected() {
-        this.perform('ping', { foo: 'bar' });
-      },
-      received: (data) => {
-        this._updateRecord(data);
-      },
-      disconnected: () => {
-        this.notification.notify("BroadcastChannel#disconnected");
+    let subscription = consumer.createSubscription(
+      { channel: 'BroadcastChannel', room: 'BestRoom' },
+      {
+        connected() {
+          this.perform('ping', { foo: 'bar' });
+        },
+        received: (data) => {
+          this._updateRecord(data);
+        },
+        disconnected: () => {
+          this.notification.notify('BroadcastChannel#disconnected');
+        },
       }
-    });
+    );
 
     /* eslint-disable */
     // Using mixin and inject your services:
@@ -63,10 +65,9 @@ export default class NotificationMessagesComponent extends Component {
     setTimeout(() => {
       this.cable.destroy();
     }, 9000);
-
   }
 
   _updateRecord(data) {
-     debug( "updateRecord(data) -> " + inspect(data) );
-   }
+    debug('updateRecord(data) -> ' + inspect(data));
+  }
 }

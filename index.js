@@ -9,8 +9,11 @@ module.exports = {
   },
 
   importDependencies() {
-    this.import('node_modules/@rails/actioncable/app/assets/javascripts/action_cable.js', {
-      using: [{ transformation: 'amd', as: '@rails/actioncable' }]
-    });
-  }
+    this.import(
+      'node_modules/@rails/actioncable/app/assets/javascripts/action_cable.js',
+      {
+        using: [{ transformation: 'amd', as: '@rails/actioncable' }],
+      }
+    );
+  },
 };
