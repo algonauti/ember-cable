@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+    tags:
+      - "*"
+  schedule:
+    - cron: "0 6 * * 0"
+
+env:
+  CI: true
+
+jobs:
+  test-locked-deps:
+    name: Locked Deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v1
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Lint
+        run: yarn lint
+      - name: Browser Tests
+        run: yarn test:ember
+
+  test-try:
+    name: Ember Try
+    runs-on: ubuntu-latest
+    needs: [test-locked-deps]
+    strategy:
+      matrix:
+        scenario:
+          - ember-lts-3.16
+          - ember-lts-3.20
+          - ember-release
+          - ember-beta
+          - ember-canary
+          - ember-default-with-jquery
+          - ember-classic
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v1
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Try Scenario
+        run: yarn ember try:one ${{ matrix.scenario }}
