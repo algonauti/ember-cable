@@ -14,6 +14,7 @@ module('Unit | Service | cable', function (hooks) {
   });
 
   test('creates a new consumer', async function (assert) {
+    assert.expect(1);
     later(
       self,
       () => {
@@ -24,6 +25,7 @@ module('Unit | Service | cable', function (hooks) {
   });
 
   test('creates a subscription without params', async function (assert) {
+    assert.expect(1);
     this.consumer.createSubscription('BroadcastChannel', {
       connected() {
         this.perform('echo');
@@ -36,6 +38,7 @@ module('Unit | Service | cable', function (hooks) {
   });
 
   test('creates a subscription passing params', async function (assert) {
+    assert.expect(2);
     this.consumer.createSubscription(
       { channel: 'BroadcastChannel', room: 'BestRoom' },
       {
