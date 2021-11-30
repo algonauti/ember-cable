@@ -23,7 +23,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
       - name: Lint
@@ -51,7 +51,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
       - name: Install Dependencies
         run: yarn install --no-lockfile --non-interactive
       - name: Try Scenario
