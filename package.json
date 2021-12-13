@@ -47,7 +47,7 @@
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.6.0",
-    "@embroider/test-setup": "^0.47.2",
+    "@embroider/test-setup": "^0.48.1",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
     "babel-eslint": "^10.1.0",
@@ -82,7 +82,7 @@
     "prettier": "^2.5.1",
     "qunit": "^2.17.2",
     "qunit-dom": "^1.6.0",
-    "webpack": "^5.64.4"
+    "webpack": "^5.65.0"
   },
   "engines": {
     "node": "12.* || 14.* || >= 16"
