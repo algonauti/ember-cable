@@ -1,5 +1,4 @@
 import Service from '@ember/service';
-
 import Consumer from '../-private/consumer.ts';
 
 export default class CableService extends Service {
