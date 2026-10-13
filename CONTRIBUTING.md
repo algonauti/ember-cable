@@ -4,22 +4,22 @@
 
 * `git clone <repository-url>`
 * `cd @algonauti/ember-cable`
-* `yarn install`
+* `pnpm install`
 
 ## Linting
 
-* `yarn lint`
-* `yarn lint:fix`
+* `pnpm lint`
+* `pnpm lint:fix`
 
 ## Running tests
 
-* `ember test` – Runs the test suite on the current Ember version
-* `ember test --server` – Runs the test suite in "watch mode"
-* `ember try:each` – Runs the test suite against multiple Ember versions
+* `pnpm test` (or `cd test-app && ember test`) – Runs the test suite on the current Ember version
+* `cd test-app && ember test --server` – Runs the test suite in "watch mode"
+* `cd test-app && ember try:each` – Runs the test suite against multiple Ember versions
 
-## Running the dummy application
+## Running the test app
 
-* `ember serve`
-* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
+* `pnpm start`
+* Visit the test app at [http://localhost:4200](http://localhost:4200).
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).

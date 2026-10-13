@@ -5,6 +5,8 @@ This add-on enables simple integration of Rails Action Cable into Ember apps.
 [![CI](https://github.com/algonauti/ember-cable/workflows/CI/badge.svg)](https://github.com/algonauti/ember-cable/actions)
 [![Ember Observer Score](https://emberobserver.com/badges/-algonauti-ember-cable.svg)](https://emberobserver.com/addons/@algonauti/ember-cable)
 
+> **v2.0.0** is published as a [v2 addon](https://github.com/embroider-build/embroider/blob/main/docs/v2-faq.md) (Embroider format). It requires `ember-auto-import` >= 2 and Ember >= 4.12. Repository layout: `ember-cable/` (the addon) and `test-app/` (tests).
+
 ### Installation
 run the following command from inside your ember-cli project:
 
@@ -16,7 +18,7 @@ Once the addon is installed, the cable service can be injected wherever
 needed in the application.
 
 ```js
-// tests/dummy/app/components/notification-messages/component.js
+// test-app/app/components/notification-messages/component.js
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { debug, inspect } from '@ember/debug';
