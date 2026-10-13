@@ -89,6 +89,37 @@ export default class NotificationMessagesComponent extends Component {
    }
 }
 ```
+## TypeScript
+
+The addon is written in TypeScript and ships its own type declarations.
+
+```ts
+import Component from '@glimmer/component';
+import { service } from '@ember/service';
+import type CableService from '@algonauti/ember-cable/services/cable';
+
+export default class Notifications extends Component {
+  @service declare cable: CableService;
+
+  constructor(owner: unknown, args: object) {
+    super(owner, args);
+
+    const consumer = this.cable.createConsumer('ws://localhost:4200/cable');
+
+    consumer.createSubscription('BroadcastChannel', {
+      connected() {
+        this.perform('ping');
+      },
+      received(data: unknown) {
+        console.log(data);
+      },
+    });
+  }
+}
+```
+
+`Consumer`, `CableService` and the ActionCable types (`BaseMixin`, `ChannelNameWithParams`, `Subscription`, `Subscriptions`) are also exported from `@algonauti/ember-cable`.
+
 Contributing
 ------------------------------------------------------------------------------
 

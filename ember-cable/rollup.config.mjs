@@ -45,7 +45,7 @@ export default {
     babel({
       babelHelpers: 'bundled',
       configFile: './babel.config.mjs',
-      extensions: ['.gjs', '.js'],
+      extensions: ['.gjs', '.js', '.gts', '.ts'],
     }),
 
     // Ensure that standalone .hbs files are properly integrated as Javascript.
@@ -56,6 +56,8 @@ export default {
 
     // addons are allowed to contain imports of .css files, which we want rollup
     // to leave alone and keep in the published output.
+    addon.declarations('declarations', 'tsc --emitDeclarationOnly'),
+
     addon.keepAssets(['**/*.css']),
 
     // Remove leftover build artifacts when starting a new build.

@@ -3,6 +3,14 @@ export default {
     compact: false,
   },
   plugins: [
+    [
+      '@babel/plugin-transform-typescript',
+      {
+        allExtensions: true,
+        allowDeclareFields: true,
+        onlyRemoveTypeImports: true,
+      },
+    ],
     '@embroider/addon-dev/template-colocation-plugin',
     [
       'babel-plugin-ember-template-compilation',

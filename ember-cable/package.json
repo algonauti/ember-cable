@@ -36,16 +36,20 @@
     "lint:js:fix": "eslint . --fix",
     "prepack": "rollup --config",
     "start": "rollup --config --watch",
-    "test": "echo \"A v2 addon does not have tests, run tests in test-app\""
+    "test": "echo \"A v2 addon does not have tests, run tests in test-app\"",
+    "lint:types": "tsc --noEmit"
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.10.3",
     "@rails/actioncable": "^8.1.400",
+    "@types/rails__actioncable": "^8.0.3",
     "decorator-transforms": "^2.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
+    "@babel/plugin-transform-typescript": "^7.29.9",
     "@babel/runtime": "^8.0.7",
+    "@ember/library-tsconfig": "^3.0.0",
     "@embroider/addon-dev": "^8.4.2",
     "@glimmer/component": "^2.1.1",
     "@glimmer/tracking": "^1.1.2",
@@ -82,12 +86,26 @@
     }
   },
   "exports": {
-    ".": "./dist/index.js",
-    "./*": "./dist/*.js",
+    ".": {
+      "types": "./declarations/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./declarations/*.d.ts",
+      "default": "./dist/*.js"
+    },
     "./addon-main.js": "./addon-main.cjs"
   },
   "files": [
     "addon-main.cjs",
+    "declarations",
     "dist"
-  ]
+  ],
+  "typesVersions": {
+    "*": {
+      "*": [
+        "declarations/*"
+      ]
+    }
+  }
 }

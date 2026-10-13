@@ -1,0 +1,11 @@
+{
+  "extends": "@ember/library-tsconfig",
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "allowJs": true,
+    "declarationDir": "declarations",
+    "rewriteRelativeImportExtensions": true,
+    "rootDir": "./src",
+    "types": ["ember-source/types"]
+  }
+}

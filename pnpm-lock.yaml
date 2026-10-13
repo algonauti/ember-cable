@@ -20,6 +20,9 @@ importers:
       '@rails/actioncable':
         specifier: ^8.1.400
         version: 8.1.400
+      '@types/rails__actioncable':
+        specifier: ^8.0.3
+        version: 8.0.3
       decorator-transforms:
         specifier: ^2.4.0
         version: 2.4.0(@babel/core@7.29.7)
@@ -27,9 +30,15 @@ importers:
       '@babel/core':
         specifier: ^7.29.0
         version: 7.29.7
+      '@babel/plugin-transform-typescript':
+        specifier: ^7.29.9
+        version: 7.29.9(@babel/core@7.29.7)
       '@babel/runtime':
         specifier: ^8.0.7
         version: 8.0.7
+      '@ember/library-tsconfig':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: ^8.4.2
         version: 8.4.2(rollup@4.64.6)
@@ -1066,6 +1075,9 @@ packages:
   '@ember/edition-utils@1.2.0':
     resolution: {integrity: sha512-VmVq/8saCaPdesQmftPqbFtxJWrzxNGSQ+e8x8LLe3Hjm36pJ04Q8LeORGZkAeOhldoUX9seLGmSaHeXkIqoog==}
 
+  '@ember/library-tsconfig@3.0.0':
+    resolution: {integrity: sha512-2o4D+YB0efPe8HJJlaC303qx8dWH2khcKe5ctp4fMCfqP9EibNnyWScNb2MkaFjEqrdRXqTVK+lGHXOoM70omw==}
+
   '@ember/optional-features@3.0.0':
     resolution: {integrity: sha512-HMQqZoBb16I4NyHfQglIYjopSG6folcEJah2WPa0FuolWRA/8cS5ozQmFK5BQx7cijTQJxj6viLpQK9KrXuYdw==}
     engines: {node: '>= 20.19'}
@@ -1844,6 +1856,9 @@ packages:
 
   '@types/node@26.6.5':
     resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
+
+  '@types/rails__actioncable@8.0.3':
+    resolution: {integrity: sha512-y46MOTYorVQVwlHUyaZYbrh3nIkXsRYNuPna32lb3RngLVBlndNbIPvAUywFfhivftNhYg+vW5sZKWYCVIX2lA==}
 
   '@types/responselike@1.0.3':
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
@@ -7550,6 +7565,8 @@ snapshots:
 
   '@ember/edition-utils@1.2.0': {}
 
+  '@ember/library-tsconfig@3.0.0': {}
+
   '@ember/optional-features@3.0.0(@types/node@26.6.5)':
     dependencies:
       ember-cli-version-checker: 5.1.2
@@ -8304,6 +8321,8 @@ snapshots:
   '@types/node@26.6.5':
     dependencies:
       undici-types: 8.9.0
+
+  '@types/rails__actioncable@8.0.3': {}
 
   '@types/responselike@1.0.3':
     dependencies:

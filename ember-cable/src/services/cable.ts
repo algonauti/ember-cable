@@ -1,24 +1,28 @@
 import Service from '@ember/service';
 
-import Consumer from '../-private/consumer.js';
+import Consumer from '../-private/consumer.ts';
 
 export default class CableService extends Service {
-  constructor(...args) {
-    super(...args);
-    this._consumers = [];
-  }
+  private _consumers: Consumer[] = [];
 
-  createConsumer(url) {
-    let consumer = new Consumer(url);
+  createConsumer(url: string): Consumer {
+    const consumer = new Consumer(url);
 
     if (consumer.connect()) {
       this._consumers.push(consumer);
     }
+
     return consumer;
   }
 
-  willDestroy() {
+  willDestroy(): void {
     super.willDestroy();
     this._consumers.forEach((consumer) => consumer.disconnect());
+  }
+}
+
+declare module '@ember/service' {
+  interface Registry {
+    cable: CableService;
   }
 }
