@@ -1,0 +1,13 @@
+# compiled output
+/declarations/
+/dist/
+
+# dependencies
+/node_modules/
+
+# misc
+/.eslintcache
+/.stylelintcache
+
+# pnpm pack output
+*.tgz

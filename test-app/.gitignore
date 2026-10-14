@@ -1,0 +1,16 @@
+# compiled output
+/dist/
+
+# dependencies
+/node_modules/
+
+# misc
+/.env*
+/.pnp*
+/.eslintcache
+/.stylelintcache
+/coverage/
+/testem.log
+
+# broccoli-debug
+/DEBUG/

@@ -1,0 +1,111 @@
+{
+  "name": "@algonauti/ember-cable",
+  "version": "2.0.0",
+  "description": "Power your ember.js application with actioncable",
+  "keywords": [
+    "ember-addon",
+    "ember-cli",
+    "ember",
+    "node",
+    "realtime",
+    "websocket",
+    "actioncable",
+    "rails"
+  ],
+  "homepage": "https://github.com/algonauti/ember-cable",
+  "license": "MIT",
+  "author": "Salvatore Ferrucci",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/algonauti/ember-cable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/algonauti/ember-cable/issues"
+  },
+  "scripts": {
+    "build": "rollup --config",
+    "format": "prettier . --cache --write",
+    "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\"",
+    "lint:css": "stylelint \"**/*.css\" --allow-empty-input --cache",
+    "lint:css:fix": "stylelint \"**/*.css\" --allow-empty-input --fix",
+    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" && pnpm format",
+    "lint:format": "prettier . --cache --check",
+    "lint:hbs": "ember-template-lint .",
+    "lint:hbs:fix": "ember-template-lint . --fix",
+    "lint:js": "eslint . --cache",
+    "lint:js:fix": "eslint . --fix",
+    "prepack": "rollup --config",
+    "start": "rollup --config --watch",
+    "test": "echo \"A v2 addon does not have tests, run tests in test-app\"",
+    "lint:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@embroider/addon-shim": "^1.10.3",
+    "@rails/actioncable": "^8.1.400",
+    "@types/rails__actioncable": "^8.0.3",
+    "decorator-transforms": "^2.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/plugin-transform-typescript": "^7.29.9",
+    "@babel/runtime": "^8.0.7",
+    "@ember/library-tsconfig": "^3.0.0",
+    "@embroider/addon-dev": "^8.4.2",
+    "@glimmer/component": "^2.1.1",
+    "@glimmer/tracking": "^1.1.2",
+    "@ijlee2-frontend-configs/ember-template-lint": "^3.0.2",
+    "@ijlee2-frontend-configs/eslint-config-ember": "^4.7.0",
+    "@ijlee2-frontend-configs/prettier": "^3.4.2",
+    "@ijlee2-frontend-configs/stylelint": "^3.3.1",
+    "@rollup/plugin-babel": "^7.1.0",
+    "babel-plugin-ember-template-compilation": "^4.0.1",
+    "concurrently": "^10.0.6",
+    "ember-modifier": "^4.3.0",
+    "ember-source": "^7.3.0",
+    "ember-template-lint": "^7.9.4",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "rollup": "^4.64.6",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-order": "^8.1.2",
+    "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": ">= 20.19"
+  },
+  "ember": {
+    "edition": "octane"
+  },
+  "ember-addon": {
+    "main": "addon-main.cjs",
+    "type": "addon",
+    "version": 2,
+    "app-js": {
+      "./services/cable.js": "./dist/_app_/services/cable.js"
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./declarations/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./declarations/*.d.ts",
+      "default": "./dist/*.js"
+    },
+    "./addon-main.js": "./addon-main.cjs"
+  },
+  "files": [
+    "addon-main.cjs",
+    "declarations",
+    "dist"
+  ],
+  "typesVersions": {
+    "*": {
+      "*": [
+        "declarations/*"
+      ]
+    }
+  }
+}
