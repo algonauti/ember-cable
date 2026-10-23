@@ -1,3 +1,4 @@
+import { adapters } from '@rails/actioncable';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
@@ -46,5 +47,28 @@ module('Unit | Service | cable', function (hooks) {
         },
       },
     );
+  });
+
+  test('offers the given subprotocols after the Action Cable ones', function (assert) {
+    const handshakes = [];
+    const { WebSocket } = adapters;
+    adapters.WebSocket = class extends WebSocket {
+      constructor(url, protocols) {
+        super(url, protocols);
+        handshakes.push(protocols);
+      }
+    };
+
+    try {
+      this.owner
+        .lookup('service:cable')
+        .createConsumer('ws://localhost:4200/cable', ['token.abc']);
+    } finally {
+      adapters.WebSocket = WebSocket;
+    }
+
+    assert.deepEqual(handshakes, [
+      ['actioncable-v1-json', 'actioncable-unsupported', 'token.abc'],
+    ]);
   });
 });

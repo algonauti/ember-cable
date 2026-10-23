@@ -4,8 +4,10 @@ import Consumer from '../-private/consumer.ts';
 export default class CableService extends Service {
   private _consumers: Consumer[] = [];
 
-  createConsumer(url: string): Consumer {
+  createConsumer(url: string, subprotocols: string[] = []): Consumer {
     const consumer = new Consumer(url);
+    // Added before connecting, so they are offered on the first handshake.
+    subprotocols.forEach((subprotocol) => consumer.addSubProtocol(subprotocol));
 
     if (consumer.connect()) {
       this._consumers.push(consumer);
