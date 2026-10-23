@@ -47,4 +47,15 @@ module('Unit | Service | cable', function (hooks) {
       },
     );
   });
+
+  test('offers no extra subprotocols by default', function (assert) {
+    assert.deepEqual(this.consumer.subprotocols, []);
+  });
+
+  test('adds subprotocols to the consumer', function (assert) {
+    const consumer = this.owner
+      .lookup('service:cable')
+      .createConsumer('ws://localhost:4200/cable', ['foo', 'bar']);
+    assert.deepEqual(consumer.subprotocols, ['foo', 'bar']);
+  });
 });

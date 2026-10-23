@@ -89,6 +89,14 @@ export default class NotificationMessagesComponent extends Component {
    }
 }
 ```
+### Subprotocols
+
+`createConsumer` accepts an optional list of WebSocket subprotocols, offered on the handshake next to Action Cable's own:
+
+```js
+this.cable.createConsumer('ws://localhost:4200/cable', ['my-auth-token']);
+```
+
 ## TypeScript
 
 The addon is written in TypeScript and ships its own type declarations.
